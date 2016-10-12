@@ -1,0 +1,38 @@
+data
+java
+
+int
+basic
+string
+basic
+bool
+basic
+
+IntArray = array of int
+BoolArray = array of bool
+StringArray = array of string
+
+Param = variant {
+  intParam : int,
+  intAParam : IntArray,
+  boolParam : bool,
+  boolAParam : BoolArray,
+  stringParam : string,
+  stringAParam : StringArray
+}
+
+Params = array of Param
+
+SelectQuery = record {
+  methodName : string,
+  params : Params
+}
+
+ApiResponse = variant {
+  result : string,
+  error : string
+}
+
+ApiQuery = variant {
+  select : SelectQuery
+}

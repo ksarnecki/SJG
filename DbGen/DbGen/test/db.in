@@ -1,0 +1,169 @@
+javaSync {
+  filename GenDb;
+  package mednt.lekolepki.db;
+  import mednt.lekolepki.model;
+}
+
+appdata	AppData.dd;
+
+query string getContent() 
+  "SELECT now()";
+
+query AppInns getInns(pictureIds : int[])
+"SELECT i.id, i.name_pl, i.name_eng, i.name_latin, ip.picture_id FROM nw_ll_inn i LEFT JOIN ll_inn_picture ip ON ip.inn_id=i.id WHERE ip.picture_id IN (%[pictureIds]) AND (i.name_pl NOT LIKE '' OR i.name_eng NOT LIKE '' OR i.name_latin NOT LIKE '') ORDER BY i.name_pl;";
+
+query AppKeywords getKeywords(pictureIds : int[])
+"SELECT kw.id, kw.name, kwp.picture_id FROM ll_keyword kw LEFT JOIN ll_keyword_picture kwp ON kwp.keyword_id=kw.id WHERE kwp.picture_id IN (%[pictureIds]) ORDER BY name;";
+
+query AppCategories getCategories(pictureIds : int[])
+"SELECT c.id, c.name, c.descr, cp.picture_id FROM ll_category c LEFT JOIN ll_category_picture cp ON cp.category_id=c.id WHERE cp.picture_id IN (%[pictureIds]) ORDER BY name;";
+
+query AppPictograms getPictograms()
+"SELECT p.id, p.descr, p.created, p.modified, (p.state_id=1), pp.id, pp.val, pp.name, p.code FROM ll_picture p LEFT JOIN ll_picture_priority pp ON pp.id = p.priority_id"
+JOIN categories=getCategories(this.id) ON parent.id=child.pictureId
+JOIN keywords=getKeywords(this.id) ON parent.id=child.pictureId 
+JOIN inns=getInns(this.id) ON parent.id=child.pictureId;
+
+query AppPictograms getPictograms(categoryId : int, descrPattern : string, innPattern : string, limit : int, offset : int, sortTypeId : int)
+"SELECT p.id, p.descr, p.created, p.modified, (p.state_id=1), pp.id, pp.val, pp.name, p.code FROM ll_picture p LEFT JOIN ll_picture_priority pp ON pp.id = p.priority_id LEFT JOIN ll_category_picture cp ON cp.picture_id=p.id LEFT JOIN ll_category c ON c.id=cp.category_id LEFT JOIN ll_inn_picture ip ON ip.picture_id=p.id LEFT JOIN nw_ll_inn i ON i.id=ip.inn_id WHERE CASE WHEN %[categoryId]<>0 THEN c.id=%[categoryId] ELSE 1=1 END AND CASE WHEN '%[descrPattern]' NOT LIKE '' THEN p.descr LIKE '%[descrPattern]%' OR p.descr LIKE '% %[descrPattern]%' ELSE 1=1 END AND CASE WHEN '%[innPattern]' NOT LIKE '' THEN i.name_pl LIKE '%[innPattern]%' OR i.name_pl LIKE '% %[innPattern]%' OR i.name_eng LIKE '%[innPattern]%' OR i.name_eng LIKE '% %[innPattern]%' OR i.name_latin LIKE '%[innPattern]%' OR i.name_latin LIKE '% %[innPattern]%' ELSE 1=1 END GROUP BY p.id ORDER BY CASE WHEN %[sortTypeId]=1 THEN p.descr END ASC, CASE WHEN %[sortTypeId]=2 THEN p.descr END DESC, CASE WHEN %[sortTypeId]=3 THEN p.created END ASC, CASE WHEN %[sortTypeId]=4 THEN p.created END DESC, CASE WHEN %[sortTypeId]=5 THEN p.modified END ASC, CASE WHEN %[sortTypeId]=6 THEN p.modified END DESC LIMIT %[limit] OFFSET %[offset];"
+JOIN categories=getCategories(this.id) ON parent.id=child.pictureId
+JOIN keywords=getKeywords(this.id) ON parent.id=child.pictureId 
+JOIN inns=getInns(this.id) ON parent.id=child.pictureId;
+
+query AppPictograms getPictogramsByInnId(innId : int)
+"SELECT p.id, p.descr, p.created, p.modified, (p.state_id=1), pp.id, pp.val, pp.name, p.code FROM ll_picture p LEFT JOIN ll_picture_priority pp ON pp.id = p.priority_id LEFT JOIN ll_inn_picture ip ON ip.picture_id=p.id LEFT JOIN nw_ll_inn i ON i.id=ip.inn_id WHERE i.id=%[innId] GROUP BY p.id"
+JOIN categories=getCategories(this.id) ON parent.id=child.pictureId
+JOIN keywords=getKeywords(this.id) ON parent.id=child.pictureId 
+JOIN inns=getInns(this.id) ON parent.id=child.pictureId;
+
+query AppInts getPictogramsIdsByInnId(innId : int)
+"SELECT p.id FROM ll_picture p LEFT JOIN ll_inn_picture ip ON ip.picture_id=p.id LEFT JOIN nw_ll_inn i ON i.id=ip.inn_id WHERE i.id=%[innId] GROUP BY p.id";
+
+query AppPictograms getPictograms(pattern : string, skipIds : string, limit : int, offset : int)
+"SELECT p.id, p.descr, p.created, p.modified, (p.state_id=1), pp.id, pp.val, pp.name, p.code FROM ll_picture p LEFT JOIN ll_picture_priority pp ON pp.id = p.priority_id WHERE p.id NOT IN(%[skipIds]) AND (p.descr LIKE '%[pattern]%' OR p.descr LIKE '% %[pattern]%') GROUP BY p.id ORDER BY p.descr ASC LIMIT %[limit] OFFSET %[offset];"
+JOIN categories=getCategories(this.id) ON parent.id=child.pictureId
+JOIN keywords=getKeywords(this.id) ON parent.id=child.pictureId 
+JOIN inns=getInns(this.id) ON parent.id=child.pictureId;
+
+query AppCategories getCategories(pattern : string, skipIds : string, limit : int, offset : int, sortTypeId : int)
+"SELECT id, name, descr, -1 FROM ll_category WHERE id NOT IN(%[skipIds]) AND (name LIKE '%[pattern]%' OR name LIKE '% %[pattern]%' OR descr LIKE '%[pattern]%' OR descr LIKE '% %[pattern]%') ORDER BY CASE WHEN %[sortTypeId]=1 THEN name END ASC, CASE WHEN %[sortTypeId]=2 THEN name END DESC, CASE WHEN %[sortTypeId]=3 THEN id END ASC, CASE WHEN %[sortTypeId]=4 THEN id END DESC LIMIT %[limit] OFFSET %[offset];";
+
+query AppKeywords getKeywords(pattern : string, skipIds : string, limit : int, offset : int, sortTypeId : int)
+"SELECT id, name, -1 FROM ll_keyword WHERE id NOT IN(%[skipIds]) AND (name LIKE '%[pattern]%' OR name LIKE '% %[pattern]%') ORDER BY CASE WHEN %[sortTypeId]=1 THEN name END ASC, CASE WHEN %[sortTypeId]=2 THEN name END DESC, CASE WHEN %[sortTypeId]=3 THEN id END ASC, CASE WHEN %[sortTypeId]=4 THEN id END DESC LIMIT %[limit] OFFSET %[offset];";
+
+query AppInns getInns(pattern : string, skipIds : string, limit : int, offset : int, sortTypeId : int)
+"SELECT id, name_pl, name_eng, name_latin, -1 FROM nw_ll_inn WHERE id NOT IN(%[skipIds]) AND (name_pl LIKE '%[pattern]%' OR name_eng LIKE '%[pattern]%' OR name_latin LIKE '%[pattern]%') AND (name_pl NOT LIKE '' OR name_eng NOT LIKE '' OR name_latin NOT LIKE '') ORDER BY CASE WHEN %[sortTypeId]=1 THEN COALESCE(NULLIF(name_eng, ''), NULLIF(name_pl, ''), NULLIF(name_latin, '')) END ASC, CASE WHEN %[sortTypeId]=2 THEN COALESCE(NULLIF(name_eng, ''), NULLIF(name_pl, ''), NULLIF(name_latin, '')) END DESC LIMIT %[limit] OFFSET %[offset];";
+
+query AppPictogram getPictogram(id : int)
+"SELECT p.id, p.descr, p.created, p.modified, (p.state_id=1), pp.id, pp.val, pp.name, p.code FROM ll_picture p LEFT JOIN ll_picture_priority pp ON pp.id = p.priority_id WHERE p.id=%[id]"
+JOIN categories=getCategories(this.id)
+JOIN keywords=getKeywords(this.id) 
+JOIN inns=getInns(this.id);
+
+query AppCategory getCategory(id : int)
+"SELECT id, name, descr, -1 FROM ll_category WHERE id=%[id] LIMIT 1";
+
+query AppInn getInn(id : int)
+"SELECT id, name_pl, name_eng, name_latin, -1 FROM nw_ll_inn WHERE id=%[id] LIMIT 1";
+
+query int getLastCreatedPictogramId()
+"SELECT id FROM ll_picture ORDER BY created DESC LIMIT 1";
+
+query int getLastCreatedCategoryId()
+"SELECT id FROM ll_category ORDER BY id DESC LIMIT 1";
+
+query int getLastCreatedKeywordId()
+"SELECT id FROM ll_keyword ORDER BY id DESC LIMIT 1";
+
+query int checkIfCategoryExists(id : int, name : string)
+"SELECT COUNT(id) FROM ll_category WHERE id != %[id] AND name LIKE BINARY '%[name]' LIMIT 1";
+
+query int checkIfKeywordExists(id : int, name : string)
+"SELECT COUNT(id) FROM ll_keyword WHERE id != %[id] AND name LIKE BINARY '%[name]' LIMIT 1";
+
+insert addPictogram(code : string, descr : string, stateId : int, priorityId : int)
+"INSERT INTO ll_picture(code, descr, created, modified, state_id, priority_id) VALUES ('%[code]', '%[descr]', now(), now(), %[stateId], %[priorityId]);";
+
+insert addCategory(name : string, descr : string)
+"INSERT INTO ll_category(name, descr) VALUES('%[name]', '%[descr]');";
+
+insert addKeyword(name : string)
+"INSERT INTO ll_keyword(name) VALUES ('%[name]');";
+
+update updatePictogram(id : int, code : string, descr : string, stateId : int, priorityId : int)
+"UPDATE ll_picture SET code='%[code]', descr='%[descr]', modified=now(), state_id=%[stateId], priority_id=%[priorityId] WHERE id=%[id];";
+
+update updatePictogramStatus(id : int, stateId : int)
+"UPDATE ll_picture SET state_id=%[stateId], modified=now() WHERE id=%[id];";
+
+update updatePictogramsModifiedTime(currPics : string, leftPics : string)
+"UPDATE ll_picture SET modified=now() WHERE (id IN (%[currPics]) AND id NOT IN (%[leftPics])) OR (id NOT IN (%[currPics]) AND id IN (%[leftPics]));";
+
+update updateCategory(id : int, name : string, descr : string)
+"UPDATE ll_category SET name='%[name]', descr='%[descr]' WHERE id=%[id];";
+
+update updateKeyword(id : int, name : string)
+"UPDATE ll_keyword SET name='%[name]' WHERE id=%[id];";
+
+insert addPictogramCategories(values : string)
+"INSERT INTO ll_category_picture(picture_id, category_id) VALUES %[values]";
+
+insert addPictogramInns(values : string)
+"INSERT INTO ll_inn_picture(picture_id, inn_id) VALUES %[values]";
+
+insert addPictogramKeywords(values : string)
+"INSERT INTO ll_keyword_picture(picture_id, keyword_id) VALUES %[values]";
+
+delete deletePictogramCategories(id : int)
+"DELETE FROM ll_category_picture WHERE picture_id=%[id];";
+
+delete deletePictogramInns(id : int)
+"DELETE FROM ll_inn_picture WHERE picture_id=%[id];";
+
+delete deletePictogramInnsByInnId(id : int)
+"DELETE FROM ll_inn_picture WHERE inn_id=%[id];";
+
+delete deletePictogramKeywords(id : int)
+"DELETE FROM ll_keyword_picture WHERE picture_id=%[id];";
+
+delete deletePictogram(id : int)
+"DELETE FROM ll_picture WHERE id=%[id];";
+
+delete deleteCategories(id : int)
+"DELETE FROM ll_category WHERE id=%[id];";
+
+delete deletePictureCategoriesByCategoryId(id : int)
+"DELETE FROM ll_category_picture WHERE category_id=%[id];";
+
+delete deleteKeywords(id : int)
+"DELETE FROM ll_keyword WHERE id=%[id];";
+
+delete deletePictureKeywordsByKeywordId(id : int)
+"DELETE FROM ll_keyword_picture WHERE keyword_id=%[id];";
+
+query AppPriorities getPriorities()
+"SELECT id, val, name FROM ll_picture_priority ORDER BY val;";
+
+query int countPictogramsByStateId(stateId : int)
+"SELECT COUNT(*) FROM ll_picture WHERE state_id=%[stateId];";
+
+query int countPictograms()
+"SELECT COUNT(*) FROM ll_picture";
+
+query int countCategories()
+"SELECT COUNT(*) FROM ll_category";
+
+query int countKeywords()
+"SELECT COUNT(*) FROM ll_keyword";
+
+query int countInns()
+"SELECT COUNT(*) FROM nw_ll_inn WHERE name_pl NOT LIKE '' OR name_eng NOT LIKE '' OR name_latin NOT LIKE ''";
+
+query string getLastUpdate()
+"SELECT FROM_UNIXTIME(val) FROM ll_cfg WHERE key_kind LIKE 'data_version'";
+
+update setLastUpdate()
+"UPDATE ll_cfg SET val=UNIX_TIMESTAMP(now()) WHERE key_kind LIKE 'data_version'";
+
+update setLastUpdate(value : string)
+"UPDATE ll_cfg SET val=%[value] WHERE key_kind LIKE 'data_version'";

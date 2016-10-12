@@ -1,0 +1,171 @@
+SqlParserData
+
+cpp
+
+int
+basic
+
+string
+basic
+
+Sqls = array of Sql
+
+SqlPtr = variant {
+  value : Sql
+}
+
+BasicField = record {
+  column : string,
+  table : string
+}
+
+AgrFieldKind = variant {
+  min,
+  max,
+  count
+}
+
+AgrField = record {
+  agrFieldKind : AgrFieldKind,
+  args : string // string -> Fields
+}
+
+FieldKind = variant {
+  specialField : string, // %[...]
+  basicField : BasicField, //
+  agrField : AgrField, // max/count
+  allField, // *
+  query : SqlPtr
+}
+
+Field = record {
+  fieldName : string,
+  fieldKind : FieldKind
+}
+
+Operations = array of Operation
+
+OperationPtr = variant {
+  value : Operation
+}
+
+BinaryOperator = variant {
+  like,
+  and,
+  or,
+  in,
+  equal,
+  noEqual,
+  greater,
+  smaller,
+  greaterOrEqual,
+  smallerOrEqual
+}
+
+BinaryOperation = record {
+  left : OperationPtr,
+  right : OperationPtr,
+  binaryOperator : BinaryOperator
+}
+
+UnaryOperator = variant {
+  negative,
+  positive,
+  not
+}
+
+UnaryOperation = record {
+  right : OperationPtr,
+  unaryOperator : UnaryOperator 
+}
+
+WhenOperation = record {
+  condition : OperationPtr,
+  stmnt : OperationPtr
+}
+
+CaseOperation = record {
+  cases : WhenOperations = array of WhenOperation,
+  elseStmnt : OperationPtr
+}
+
+Operation = variant {
+  binaryOperation : BinaryOperation,
+  unaryOperation : UnaryOperation,
+  existsOperation : Sql,
+  caseOperation : CaseOperation,
+  field : Field,
+  empty
+}
+
+TableKind = variant {
+  basic : string,
+  query : SqlPtr
+}
+
+Table = record {
+  kind : TableKind,
+  as : string
+}
+
+Tables = array of Table
+
+Fields = array of Field
+
+Orders = array of Field
+
+Groups = array of Field
+
+Sort = variant {
+  empty,
+  desc,
+  asc
+}
+
+Limit = variant {
+  empty,
+  value : string
+}
+
+Set = record {
+  field : Field,
+  value : Field
+}
+
+Sets = array of Set
+
+SelectQuery = record {
+  fields : Fields,
+  tables : Tables,
+  operation : Operation, 
+  orders : Orders,
+  sort : Sort,
+  groups : Groups,
+  limit : Limit
+}
+
+InsertQuery = record {
+   table : Table,
+   fields : Fields,
+   values : Fields
+}
+
+UpdateQuery = record {
+   table : Table,
+   sets : Sets,
+   operation : Operation, 
+   limit : Limit
+}
+
+DeleteQuery = record {
+   table : Table,
+   operation : Operation, 
+   limit : Limit
+}
+
+Sql = variant {
+  deleteQuery : DeleteQuery,
+  insertQuery : InsertQuery,
+  updateQuery : UpdateQuery,
+  selectQuery : SelectQuery
+}

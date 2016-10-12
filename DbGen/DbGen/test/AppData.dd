@@ -1,0 +1,364 @@
+mednt.lekolepki.model
+java
+
+int
+basic
+
+string
+basic
+
+bool
+basic
+
+//UTILS
+
+AppPagination = record {
+	count : int,
+	pageSize : int,
+	pageCount : int,
+	actualPage : int
+}
+
+AppInts = array of int
+
+AppStringPair = record {
+	id : string,
+	value : string
+}
+
+AppStringPairs = array of AppStringPair
+
+AppResultMessages = record {
+	status : string,
+	messages : AppStringPairs
+}
+
+AppSimpleResult = variant {
+	success
+	| failure : string
+	| messages : AppResultMessages
+}
+
+//CMD
+
+AppCmdDetailPage = variant {
+	main						// strona główna
+	| adminLicences				// panel administratora z licencjami
+	| adminPictograms			// panel administratora z piktogramami
+	| adminStatistics			// panel administratora ze statystykami
+}
+
+AppCmdLookupType = variant {
+	category
+	| inn
+	| keyword
+	| pictogram
+}
+
+AppCmdLookup = record {
+	type : AppCmdLookupType,
+	pattern : string,
+	skipIds : string
+}
+
+AppCmdFetchData = variant {
+	getPictogram : int
+	| getCategory : int
+	| getInn : int
+	| getPictogramList : AppPictogramListParams
+	| getCategoryList : AppCategoryListParams
+	| getKeywordList : AppKeywordListParams
+	| getInnList : AppInnListParams
+	| getTabsData : AppTabsDataParams
+	| getLastVersion
+}
+
+AppCmdStoreData = variant {
+	putPictogram : AppPictogramParams
+	| putPictogramStatus : AppPictogramStatusParams
+	| putCategory : AppCategoryParams
+	| putKeyword : AppKeywordParams
+	| putInn : AppInnParams
+	| putLastVersion : string
+}
+
+AppCmdDeleteData = variant {
+	deletePictogram : int
+	| deleteCategory : int
+	| deleteKeyword : int
+}
+
+AppCmdDetailAjax = variant {
+	lookup : AppCmdLookup
+	| fetchData : AppCmdFetchData
+	| storeData : AppCmdStoreData
+	| deleteData : AppCmdDeleteData
+}
+
+AppCmdDetail = variant {
+	page : AppCmdDetailPage
+	| ajax : AppCmdDetailAjax
+	| redirect 
+	| error
+}
+
+AppCmd = record {
+	detail : AppCmdDetail
+}
+
+// EXTERNAL 
+
+// OBJECTS
+
+AppPictogramParams = record {
+	id : int,
+	descr : string,
+	code : string,
+	categories : string,
+	inns : string,
+	keywords : string,
+	active : string,
+	priority : int
+}
+
+AppPictogramStatusParams = record {
+	id : int,
+	active : string
+}
+
+AppCategoryParams = record {
+	id : int,
+	name : string,
+	descr : string
+}
+
+AppKeywordParams = record {
+	id : int,
+	name : string
+}
+
+AppInnParams = record {
+	id : int,
+	pictograms : string
+}
+
+AppTabsDataParams = record {
+	selectedCategory : int
+}
+
+AppSortKind = record {
+	id : int,
+	name : string
+}
+
+AppSortKinds = array of AppSortKind
+
+AppPictogramListParams = record {
+	sortKindId : int,
+	categoryId : int,
+	descrPattern : string,
+	innPattern : string,
+	pageNumber : int
+}
+
+AppCategoryListParams = record {
+	sortKindId : int,
+	namePattern : string,
+	pageNumber : int
+}
+
+AppKeywordListParams = record {
+	sortKindId : int,
+	namePattern : string,
+	pageNumber : int
+}
+
+AppInnListParams = record {
+	sortKindId : int,
+	namePattern : string,
+	pageNumber : int
+}
+
+AppUser = record {
+	login : string,
+	name : string,
+	surname : string
+}
+
+AppPictogramState = variant {
+	active
+	| inactive
+}
+
+AppCategory = record {
+	id : int,
+	name : string,
+	descr : string,
+	pictureId : int
+}
+
+AppCategories = array of AppCategory
+
+AppInn = record {
+	id : int,
+	namePl : string,
+	nameEng : string,
+	nameLatin : string,
+	pictureId : int
+}
+
+AppInns = array of AppInn
+
+AppKeyword = record {
+	id : int,
+	name : string,
+	pictureId : int
+}
+
+AppKeywords = array of AppKeyword
+
+AppPriority = record {
+	id : int,
+	value : int,
+	name : string
+}
+
+AppPriorities = array of AppPriority
+
+AppPictogram = record {
+	id : int,
+	descr : string,
+	created : string,
+	modified : string,
+	active : bool,
+	priority : AppPriority,
+	code : string,
+	categories : AppCategories,
+	keywords : AppKeywords,
+	inns : AppInns
+}
+
+AppPictograms = array of AppPictogram
+
+AppFragmentLookup = variant {
+	categories : AppCategories
+	| keywords : AppKeywords
+	| inns : AppInns
+	| pictograms : AppPictograms
+}
+
+// PAGES
+
+AppMainTab = record {
+	activeCount : int,
+	inactiveCount : int,
+	sortKinds : AppSortKinds,
+	categories : AppCategories,
+	priorities : AppPriorities
+}
+
+AppCategoryTab = record {
+	sortKinds : AppSortKinds,
+	count : int
+}
+
+AppKeywordTab = record {
+	sortKinds : AppSortKinds,
+	count : int
+}
+
+AppInnTab = record {
+	sortKinds : AppSortKinds,
+	count : int
+}
+
+AppPictogramsTab = record {
+	mainTab : AppMainTab,
+	categoryTab : AppCategoryTab,
+	keywordTab : AppKeywordTab,
+	innTab : AppInnTab,
+	lastUpdate : string
+}
+
+AppAdminTabs = variant {
+	licensesTab
+	| pictogramsTab : AppPictogramsTab
+	| statisticsTab
+}
+
+AppAdminPage = record {
+	user : AppUser,
+	adminTabs : AppAdminTabs
+}
+
+AppPage = variant {
+	mainPage
+	| adminPage : AppAdminPage
+}
+
+// RESULT
+
+AppContent = record {
+	page : AppPage
+}
+
+AppFragmentFtlListType = variant {
+	pictograms : AppPictograms
+	| categories : AppCategories
+	| keywords : AppKeywords
+	| inns : AppInns
+}
+
+AppFragmentFtlList = record {
+	pagination : AppPagination,
+	listType : AppFragmentFtlListType
+}
+
+AppFragmentFtl = variant {
+	lookup : AppFragmentLookup
+	| list : AppFragmentFtlList
+}
+
+AppFragmentInn = record {
+	inn : AppInn,
+	pictograms : AppPictograms
+}
+
+AppTabsDataResult = record {
+	activePictogramCount : int,
+	inactivePictogramCount : int,
+	categories : AppCategories,
+	selectedCategory : int,
+	categoryCount : int,
+	keywordCount : int,
+	innCount : int
+}
+
+AppFragmentJson = variant {
+	pictogram : AppPictogram
+	| category : AppCategory
+	| keyword : AppKeyword
+	| inn : AppFragmentInn
+	| simple : AppSimpleResult
+	| tabsData : AppTabsDataResult
+}
+
+AppFragment = variant {
+	ftl : AppFragmentFtl
+	| json : AppFragmentJson
+}
+
+AppError = variant {
+	e404
+}
+
+AppRedirect = record {
+	url : string
+}
+
+AppResult = variant {
+	content : AppContent
+	| fragment : AppFragment
+	| error : AppError
+	| redirect : AppRedirect
+}

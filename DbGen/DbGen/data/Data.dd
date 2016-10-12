@@ -1,0 +1,86 @@
+Data
+cpp
+int
+basic
+string
+basic
+StringArray = array of string
+RecordElem = record {
+  name : string,
+  type : string
+}
+RecordElems = array of RecordElem
+Record = record {
+  name : string,
+  elems : RecordElems
+}
+SelectParamType = variant {
+  plain : string,
+  array : string
+}
+SelectParam = record {
+  name : string,
+  type : SelectParamType
+}
+SelectParams = array of SelectParam
+Join = record {
+  fieldName : string,
+  methodName : string,
+  params : StringArray,
+  parentName : string,
+  childName : string
+}
+Select = record {
+  type : string,
+  name : string,
+  params : SelectParams,
+  query : string,
+  joins : Joins = array of Join
+}
+Insert = record {
+  name : string,
+  params : SelectParams,
+  query : string
+}
+Delete = record {
+  name : string,
+  params : SelectParams,
+  query : string
+}
+Update = record {
+  name : string,
+  params : SelectParams,
+  query : string
+}
+Array = record {
+  name : string,
+  type : string
+}
+Elem = variant {
+  insert : Insert,
+  update : Update,
+  select : Select,
+  delete : Delete
+}
+Elems = array of Elem
+InputFile = record {
+  appData : string,
+  elems : Elems
+}
+OutputFileKind = variant {
+  javaSync,
+  javaAsync,
+  j2jApiClient : string,
+  javaApiProcessor
+}
+OutputFile = record {
+  kind : OutputFileKind,
+  name : string,
+  package : string,
+  imports : StringArray
+}
+OutputFiles = array of OutputFile
+DbFile = record {
+  outputFiles : OutputFiles,
+  inputFile : InputFile
+}

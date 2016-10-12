@@ -1,0 +1,58 @@
+j2jApiClient {
+  filename DbGenAjaxApiClient;
+  package data;
+  apiUrl /db/Main;
+}
+
+javaApiProcessor {
+  filename JavaApiProcessor;
+  package data;
+}
+
+javaSync {
+  filename JavaSync;
+  package data;
+}
+
+javaAsync {
+  filename JavaAsync;
+  package data;
+}
+
+appdata AppData.dd;
+
+query User getUser(login : string, password : string)
+"SELECT id, name, surname FROM users WHERE login LIKE '%[login]' AND password LIKE '%[password]'";
+
+query User getUserById(id : int)
+"SELECT id, name, surname FROM users WHERE id = '%[id]'";
+
+query Users getUsers(id : int[])
+"SELECT id, name, surname FROM users WHERE id IN (%[id])"; 
+
+query ChatMessages getLastMessages(limit : int) 
+"SELECT id, authorId, added, content FROM messages"
+JOIN author = getUsers(this.authorId) ON parent.authorId = child.id;
+
+query ChatMessages getLastMessage(limit : int) 
+"SELECT id, authorId, added, content FROM messages"
+JOIN author = getUserById(this.authorId);
+
+query Providers getProviders(id : int[]) 
+"SELECT  id, name, www, address, img FROM providers WHERE id IN (%[id])";
+
+query Orders getActiveOrders(userId : int) 
+"SELECT id, userId, providerId, priceUserId, added, content, status, price FROM providers_orders WHERE status NOT LIKE 'archiwalny' AND userId = %[userId]";
+
+query BasicProvidersViewData getBasicProvidersViewData()
+"SELECT p.id, r.avg, q.queue FROM providers p LEFT JOIN (SELECT Coalesce(ROUND(AVG(score), 0), 0) avg, providerId FROM providers_ratings GROUP BY providerId) AS r ON p.id = r.providerId LEFT JOIN (SELECT Coalesce(ROUND(COUNT(*), 0), 0) queue, providerId FROM providers_orders GROUP BY providerId) AS q ON p.id = q.providerId"
+JOIN provider = getProviders(this.id) ON parent.id = child.id;
+
+query MainPageViewData getMainPageViewData(userId : int, messagesLimit : int)
+"SELECT id FROM users"
+JOIN messages = getLastMessages(messagesLimit)
+JOIN providers = getBasicProvidersViewData()
+JOIN orders = getActiveOrders(userId);
+
+insert addMessage(authorId : int, content : String)
+"INSERT INTO messages(authorId, added, content) VALUES(%[authorId], '%[content]', NOW())";

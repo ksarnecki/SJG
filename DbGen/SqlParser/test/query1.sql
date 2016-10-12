@@ -1,0 +1,1 @@
+UPDATE tabela SET a = '2', b = '3' WHERE NOT costam LIMIT 5
