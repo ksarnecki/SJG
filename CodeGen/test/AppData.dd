@@ -1,0 +1,22 @@
+Iterable
+java
+
+int
+basic
+
+string
+basic
+
+bool
+basic
+
+User = record {
+  id : int,
+  email : string
+}
+
+UserArray = array of User
+
+IntArray = array of int
+
+StringArray = array of string

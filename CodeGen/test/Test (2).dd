@@ -1,0 +1,127 @@
+mednt.dogshotel.page
+java
+
+int
+basic
+
+string
+basic
+
+bool
+basic
+
+//CMD
+
+AppCmdDetailFollowAdvert = record {
+advertID : int,
+advertURL : string
+}
+
+AppCmdDetailPage = variant {
+main
+| articleList : int
+| article : int
+| hotelList
+| hotel
+}
+
+AppCmdRedirect = variant {
+redirect
+| followAdvert : AppCmdDetailFollowAdvert
+}
+
+AppCmdDetail = variant {
+page : AppCmdDetailPage
+| redirect : AppCmdRedirect
+| error
+}
+
+AppCmd = record {
+detail : AppCmdDetail
+}
+
+// EXTERNAL 
+
+AppBanner 
+external
+mednt.dogshotel.db.AppBanner
+
+AppCategories
+external
+mednt.dogshotel.db.AppCategories
+
+AppSliderElems
+external
+mednt.dogshotel.db.AppSliderElems
+
+AppOfferElems
+external
+mednt.dogshotel.db.AppOfferElems
+
+AppBoxes
+external
+mednt.dogshotel.db.AppBoxes
+
+// OBJECTS
+
+AppImage = record {
+id : int,
+file : string,
+alt : string
+}
+
+AppBanners = record {
+bannerTop : AppBanner,
+bannerRight : AppBanner,
+bannerMid : AppBanner,
+bannerDown : AppBanner
+}
+
+AppMainBoxes = record { 
+articleNews : AppBoxes, 
+articleAdviceLeft : AppBoxes, 
+articleRecommends : AppBoxes, 
+articleAdviceBottom : AppBoxes 
+}
+
+// PAGES
+
+AppArticleList = record {
+boxes : AppBoxes,
+categories : AppCategories
+}
+
+AppMainPage = record {
+slider : AppSliderElems,
+offer : AppOfferElems,
+banners : AppBanners,
+articles : AppMainBoxes
+}
+
+// RESULT
+
+AppPage = variant {
+main : AppMainPage
+| article 
+| articleList : AppArticleList
+| hotel
+| hoteList
+}
+
+AppContent = record {
+page : AppPage
+}
+
+AppError = variant {
+e404
+}
+
+AppRedirect = record {
+url : string
+}
+
+AppResult = variant {
+content : AppContent
+| error : AppError
+| redirect : AppRedirect
+}

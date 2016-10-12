@@ -1,0 +1,71 @@
+File
+
+cpp
+
+string
+basic
+
+ExternalType = record {
+  source : string
+}
+
+ArrayType = record {
+  type : string
+}
+
+RecordField = record {
+  name : string,
+  type : string
+}
+
+RecordType = array of RecordField
+
+VariantFieldKind = variant {
+  empty,
+  type : string
+}
+
+VariantField = record {
+  name : string,
+  kind : VariantFieldKind
+}
+
+VariantType = array of VariantField
+
+DataTypeKind = variant {
+  basic : string,
+  external : ExternalType,
+  array : ArrayType,
+  record : RecordType,
+  variant : VariantType
+}
+
+DataType = record {
+  name : string,
+  kind : DataTypeKind
+}
+
+DataTypeArray = array of DataType
+
+DataFileKind = variant {
+  cpp,
+  php,
+  java,
+  cs,
+  javascript
+}
+
+DataFileBase = record {
+  file : string,
+  kind : DataFileKind,
+  types : DataTypeArray
+}
+
+GenerateFile = record {
+  name : string,
+  content : string
+}
+
+GenerateFiles = array of GenerateFile
+
+

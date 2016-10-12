@@ -1,0 +1,78 @@
+PdfUI
+cpp
+
+int
+basic
+
+string
+basic
+
+PdfSize = record {
+	width: string,
+	height: string
+}
+
+PdfPos = record {
+	x: string,
+	y: string
+}
+
+PdfFontWeight = variant {
+	normal,
+	bold
+}
+
+PdfFont = record {
+	fontFamily : string,
+	fontSize : string,
+	fontWeight : PdfFontWeight,
+	color : string
+}
+
+PdfText = record {
+	pos : PdfPos,
+	value : string,
+	font : PdfFont	
+}
+
+PdfRectText = record {
+	pos : PdfPos,
+	size : PdfSize,
+	value : string,
+	font : PdfFont
+}
+
+PdfLineStyle = variant {
+	solid,
+	dash
+}
+
+PdfLine = record {
+	pos1 : PdfPos,
+	pos2 : PdfPos,
+	width : string,
+	color : string,
+	style : PdfLineStyle
+}
+
+PdfRect = record {
+	pos : PdfPos,
+	size : PdfSize,
+	color : string
+}
+
+PdfElem = variant {
+	text : PdfText,
+	rectText : PdfRectText,
+	line : PdfLine,
+	rect : PdfRect
+}
+
+PdfElems = array of PdfElem
+
+PdfPage = record {
+	size : PdfSize,
+	elems : PdfElems
+}
+
+PdfObj = array of PdfPage

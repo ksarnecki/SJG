@@ -1,0 +1,25 @@
+JsonTest
+cpp
+
+int
+basic
+
+string
+basic
+
+IntArray = array of int
+StringArray = array of string
+
+Wariant = variant {
+  inty : IntArray,
+  stry : StringArray
+}
+
+Rekord = record {
+  pierwszy : Wariant,
+  drugi : int,
+  trzeci : string,
+  czwarty : IntArray
+}
+
+Rekordy = array of Rekord
