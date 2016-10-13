@@ -217,7 +217,7 @@ AnsiString generateJavaRecordCode(const AnsiString& package, bool onefile, bool 
     if (iterable)
       ret.Insert("import java.util.Iterator;");
   }
-  ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" "+(serializable ? " implements java.io.Serializable " : "")+"{");
+  ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" {");
   for (int i=0;i<record.Size();i++)
     ret.Insert("  private "+getRealTypeName(data, record[i].getType())+" "+record[i].getName()+";");
   ret.Insert("  public "+type+"("+getConstrParams(data, record, true)+") {");
@@ -372,7 +372,7 @@ AnsiString generateJavaRecordCode(const AnsiString& package, bool onefile, bool 
     ret.Insert("    );");
     ret.Insert("  }");
   }
-  ret.Insert("};");
+  ret.Insert("}");
   return conv(ret);
 }
 AnsiString generateJavaArrayCode(const AnsiString& package, bool onefile, bool stream, bool json, bool xml, bool isarr, bool strictNull, bool ftl, bool j2j, bool serializable, bool iterable, const DataTypeArray& data, const AnsiString& type, const ArrayType& array) {
@@ -517,25 +517,10 @@ AnsiString generateJavaArrayCode(const AnsiString& package, bool onefile, bool s
     }
   } else {
     AnsiString realType = getRealTypeName(data, array.getType());
-        ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" implements Iterable<"+realType+">"+(serializable ? "  , java.io.Serializable, " : "")+"  {");
+        ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" {");
     ret.Insert("  private ArrayList _table;");
     ret.Insert("  public "+type+"() {");
     ret.Insert("    this._table = new ArrayList();");
-    ret.Insert("  }");
-    ret.Insert("  class ArrayIterator implements Iterator<"+realType+"> {");
-    ret.Insert("    int current = 0;");
-    ret.Insert("    public boolean hasNext() {");
-    ret.Insert("      return current < "+type+".this.Size();");
-    ret.Insert("    }");
-    ret.Insert("    public "+realType+" next() {");
-    ret.Insert("      return "+type+".this.Get(current++);");
-    ret.Insert("    }");
-    ret.Insert("    public void remove() {");
-    ret.Insert("      throw new UnsupportedOperationException();");
-    ret.Insert("    }");
-    ret.Insert("  }");
-    ret.Insert("  public Iterator iterator() {");
-    ret.Insert("    return new ArrayIterator();");
     ret.Insert("  }");
     ret.Insert("  public int Size() {");
     ret.Insert("    return this._table.size();");
@@ -679,7 +664,7 @@ AnsiString generateJavaArrayCode(const AnsiString& package, bool onefile, bool s
       ret.Insert("  }");
     }
   }
-  ret.Insert("};");
+  ret.Insert("}");
   
   return conv(ret);
 }
@@ -713,7 +698,7 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
       ret.Insert("import java.util.Iterator;");
   }
   
-  ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" "+(serializable ? " implements java.io.Serializable " : "")+" {");
+  ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" {");
   ret.Insert("  private int _type;");
   bool needObj = false;
   bool needInt = false;
@@ -807,7 +792,6 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
     }
     ret.Insert("    _s.writeInt(this._type);");
     ret.Insert("    if (0==1)");
-    ret.Insert("      ;");
     for (int i=0;i<variant.Size();i++) {
       VariantField field = variant[i];
       VariantFieldKind kind = field.getKind();
@@ -837,7 +821,6 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
     ret.Insert("    "+type+" _ret = new "+type+"();");
     ret.Insert("    _ret._type = _s.readInt();");
     ret.Insert("    if (0==1)");
-    ret.Insert("      ;");
     for (int i=0;i<variant.Size();i++) {
       VariantField field = variant[i];
       VariantFieldKind kind = field.getKind();
@@ -928,7 +911,6 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
     ret.Insert("  public String toJSON() {");
     ret.Insert("    String _s = \"{\";");
     ret.Insert("    if (0==1) {");
-    ret.Insert("      ;");
     for (int i=0;i<variant.Size();i++) {
       VariantField field = variant[i];
       VariantFieldKind kind = field.getKind();
@@ -987,7 +969,6 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
     ret.Insert("    JArray _s = JArray.create();");
     ret.Insert("    JArray.putInt(_s, 0, this._type);");
     ret.Insert("    if (0==1) {");
-    ret.Insert("      ;");
     for (int i=0;i<variant.Size();i++) {
       VariantField field = variant[i];
       VariantFieldKind kind = field.getKind();
@@ -1026,7 +1007,6 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
     ret.Insert("      return null;");
     ret.Insert("    _ret._type = JArray.getInt(_s, 0);");
     ret.Insert("    if (0==1) {");
-    ret.Insert("      ;");
     for (int i=0;i<variant.Size();i++) {
       VariantField field = variant[i];
       VariantFieldKind kind = field.getKind();
@@ -1056,7 +1036,7 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
     ret.Insert("    return _ret;");
     ret.Insert("  }");
   }
-  ret.Insert("};");
+  ret.Insert("}");
   return conv(ret);
 }
 static AnsiString mkJSONUtil(const AnsiString& package, bool j2j, bool onefile) {

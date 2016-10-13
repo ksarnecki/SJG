@@ -512,7 +512,7 @@ void generateSyncFile(const DbFile& dbFile, const OutputFile& out, const DataTyp
     else if (e.isDelete())
       genDelete(fs, e.asDelete(), types, dbFile, out);
   }
-  al(fs, "};");
+  al(fs, "}");
 }
 
 static void generateJavaApiProcessor(const DbFile& dbFile, const OutputFile& out, const DataTypeArray& types) {
@@ -594,7 +594,7 @@ static void generateJavaApiProcessor(const DbFile& dbFile, const OutputFile& out
   al(fs, "      }");
   al(fs, "    throw new Exception(\"bad request\");");
   al(fs, "  }");
-  al(fs, "};");
+  al(fs, "}");
 }
 
 static void generateJavaApiServer(const DbFile& dbFile, const OutputFile& out, const DataTypeArray& types) {
