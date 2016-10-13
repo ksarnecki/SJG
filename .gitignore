@@ -27,3 +27,8 @@
 *.exe
 *.out
 *.app
+
+CodeGen/lex*
+CodeGen/php*
+Common/*
+CodeGen/.svn/

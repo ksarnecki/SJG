@@ -405,25 +405,10 @@ AnsiString generateJavaArrayCode(const AnsiString& package, bool onefile, bool s
   DataType aType = getTypeByName(data, array.getType());
   DataTypeKind kind = aType.getKind();
   if (kind.isBasic() && kind.asBasic()=="int") {
-    ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" implements Iterable<Integer>"+(serializable ? "  , java.io.Serializable, " : "")+"  {");
+    ret.Insert(AnsiString(onefile ? "final" : "public")+" class "+type+" "+(serializable ? "  , java.io.Serializable, " : "")+"  {");
     ret.Insert("  private ArrayList _table;");
     ret.Insert("  public "+type+"() {");
     ret.Insert("    this._table = new ArrayList();");
-    ret.Insert("  }");
-    ret.Insert("  class IntArrayIterator implements Iterator<Integer> {");
-    ret.Insert("    int current = 0;");
-    ret.Insert("    public boolean hasNext() {");
-    ret.Insert("      return current < "+type+".this.Size();");
-    ret.Insert("    }");
-    ret.Insert("    public Integer next() {");
-    ret.Insert("      return "+type+".this.Get(current++);");
-    ret.Insert("    }");
-    ret.Insert("    public void remove() {");
-    ret.Insert("      throw new UnsupportedOperationException();");
-    ret.Insert("    }");
-    ret.Insert("  }");
-    ret.Insert("  public Iterator iterator() {");
-    ret.Insert("    return new IntArrayIterator();");
     ret.Insert("  }");
     ret.Insert("  public int Size() {");
     ret.Insert("    return this._table.size();");

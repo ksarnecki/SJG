@@ -4,6 +4,12 @@ javaSync {
   import mednt.lekolepki.model;
 }
 
+javaApiProcessor {
+  filename JavaApiProcessor;
+  package data;
+}
+            
+
 appdata	AppData.dd;
 
 query string getContent() 
