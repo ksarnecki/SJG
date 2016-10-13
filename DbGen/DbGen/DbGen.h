@@ -1,9 +1,9 @@
 #ifndef INTERNALGEN_H
 #define INTERNALGEN_H
 
-#include "../CodeGen4/Parser.h"
-#include "../CodeGen4/Util.h"
-#include "../CodeGen4/JavaGenerator.h"
+#include "../CodeGen/Parser.h"
+#include "../CodeGen/Util.h"
+#include "../CodeGen/JavaGenerator.h"
 
 #include "../SqlParser/SqlParser.h"
 

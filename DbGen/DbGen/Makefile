@@ -14,10 +14,10 @@ Data.o: makeData
 	$(CC) $(CFLAGS) data/Data.cpp
 
 makeData: data/Data.dd CodeGen
-	cd data; ../../../CodeGen4/CodeGen < Data.dd; cd ..
+	cd data; ../../../CodeGen/CodeGen < Data.dd; cd ..
 	
-CodeGen: ../../CodeGen4/CodeGen.cpp
-	cd ../../CodeGen4; mingw32-make
+CodeGen: ../../CodeGen/CodeGen.cpp
+	cd ../../CodeGen; mingw32-make
 
 AnsiString.o: ../../Common/AnsiString.cpp
 	$(CC) $(CFLAGS) ../../Common/AnsiString.cpp
@@ -34,11 +34,11 @@ Exception.o: ../../Common/Exception.cpp
 Binary.o: ../../Common/Binary.cpp
 	$(CC) $(CFLAGS) ../../Common/Binary.cpp
 
-LineStream.o: ../../CodeGen4/LineStream.cpp
-	$(CC) $(CFLAGS) ../../CodeGen4/LineStream.cpp
+LineStream.o: ../../CodeGen/LineStream.cpp
+	$(CC) $(CFLAGS) ../../CodeGen/LineStream.cpp
 
 DbGenParser.o: DbGenParser.cpp DbGenLang.tab.c
-	$(CC) $(CFLAGS) -I../../CodeGen4/ DbGenParser.cpp
+	$(CC) $(CFLAGS) -I../../CodeGen/ DbGenParser.cpp
 	
 DbGenLang.tab.c : lex.dbgen.c data/DbGenLang.y
 	bison -d data/DbGenLang.y
@@ -46,23 +46,23 @@ DbGenLang.tab.c : lex.dbgen.c data/DbGenLang.y
 lex.dbgen.c: data/DbGenLang.l 
 	flex data/DbGenLang.l
  
-JavaGenerator.o: ../../CodeGen4/JavaGenerator.cpp
-	$(CC) $(CFLAGS) -o JavaGenerator.o ../../CodeGen4/JavaGenerator.cpp
+JavaGenerator.o: ../../CodeGen/JavaGenerator.cpp
+	$(CC) $(CFLAGS) -o JavaGenerator.o ../../CodeGen/JavaGenerator.cpp
 
-CodeGenParser.o: ../../CodeGen4/Parser.cpp Codegen.php.tab.c 
-	$(CC) $(CFLAGS) -o CodeGenParser.o ../../CodeGen4/Parser.cpp
+CodeGenParser.o: ../../CodeGen/Parser.cpp Codegen.php.tab.c 
+	$(CC) $(CFLAGS) -o CodeGenParser.o ../../CodeGen/Parser.cpp
 	
-Codegen.php.tab.c: ../../CodeGen4/lex.codegen.c ../../CodeGen4/data/php.y
-	bison -d ../../CodeGen4/data/php.y
+Codegen.php.tab.c: ../../CodeGen/lex.codegen.c ../../CodeGen/data/php.y
+	bison -d ../../CodeGen/data/php.y
 
-File.o: ../../CodeGen4/File.cpp
-	$(CC) $(CFLAGS) ../../CodeGen4/File.cpp
+File.o: ../../CodeGen/File.cpp
+	$(CC) $(CFLAGS) ../../CodeGen/File.cpp
 	
-Util.o: ../../CodeGen4/Util.cpp
-	$(CC) $(CFLAGS) ../../CodeGen4/Util.cpp
+Util.o: ../../CodeGen/Util.cpp
+	$(CC) $(CFLAGS) ../../CodeGen/Util.cpp
  
-lex.codegen.c: ../../CodeGen4/data/php.l 
-	flex ../../CodeGen4/data/php.l
+lex.codegen.c: ../../CodeGen/data/php.l 
+	flex ../../CodeGen/data/php.l
 
 clean:
 	rm -f *.o CodeGen *.exe lex.* php.tab.* data/Data.cpp data/Data.h
