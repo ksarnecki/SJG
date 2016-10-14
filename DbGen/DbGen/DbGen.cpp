@@ -354,9 +354,9 @@ static void prepareSqlCall(fstream& fs, const SelectParams& params, const AnsiSt
     else if (t.isArray()) {
       AnsiString tt = t.asArray();
       if (tt != "string")
-        al(fs, "    _pmap.put(\"" + params[i].getName() + "\", \"\" + " + out.getName() + ".box(" + params[i].getName() + "));");
+        al(fs, "    _pmap.put(\"" + params[i].getName() + "\", \"\" + " + out.getName() + ".boxI(" + params[i].getName() + "));");
       else
-        al(fs, "    _pmap.put(\"" + params[i].getName() + "\", \"\" + " + out.getName() + ".box(_db, " + params[i].getName() + "));");
+        al(fs, "    _pmap.put(\"" + params[i].getName() + "\", \"\" + " + out.getName() + ".boxS(_db, " + params[i].getName() + "));");
     }
     else
       throw Exception("getSelect::SelectParamType");
@@ -477,28 +477,6 @@ void generateSyncFile(const DbFile& dbFile, const OutputFile& out, const DataTyp
   for(int i=0;i<out.getImports().Size();i++)
     al(fs, out.getImports()[i]); 
   al(fs, "public class " + out.getName() + " {");
-  al(fs, "  static String box(int[] ints) {");
-  al(fs, "    StringBuffer buf = new StringBuffer();");
-  al(fs, "    for (int i=0;i<ints.length;i++)");
-  al(fs, "    buf.append(((i==0) ? \"\" : \",\") + ints[i]);");
-  al(fs, "    return buf.toString();");
-  al(fs, "  }");
-  al(fs, "  static String box(DBConn db, String[] strs) {");
-  al(fs, "    StringBuffer buf = new StringBuffer();");
-  al(fs, "    for (int i=0;i<strs.length;i++) {");
-  al(fs, "    if (i!=0)");
-  al(fs, "      buf.append(',');");
-  al(fs, "    buf.append(\"'\");");
-  al(fs, "    buf.append(db.escape(strs[i]));");
-  al(fs, "    buf.append(\"'\");");
-  al(fs, "    }");
-  al(fs, "    return buf.toString();");
-  al(fs, "  }");
-  al(fs, "  private static String prepare(String sql, HashMap<String, String> pmap) {");
-  al(fs, "    for (Map.Entry<String, String> e : pmap.entrySet())");
-  al(fs, "      sql = sql.replaceAll(\"%\\\\[\"+e.getKey()+\"]\", e.getValue());");
-  al(fs, "    return sql;");
-  al(fs, "  }");
   const Elems& elems = dbFile.getInputFile().getElems();
   for (int i = 0; i < elems.Size(); i++) {
     
