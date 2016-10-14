@@ -1,0 +1,41 @@
+SyntaxData
+cpp
+
+int
+basic
+
+string
+basic
+
+HashMapFake = array of HashMap
+MapEntryFake = array of MapEntry
+
+RealType = variant {
+  javaLangInteger,
+  javaLangString,
+  javaLangArray : RealType,
+  javaUtilRegexPattern,
+  javaUtilRegexMatcher,
+  javaUtilHashMap : HashMap,
+  javaUtilMapEntry : MapEntry,
+  lkDBConn,
+  lkSDBResult,
+  unknown
+}
+
+HashMap = record {
+  key : RealType,
+  value : RealType
+}
+
+MapEntry = record {
+  key : RealType,
+  value : RealType 
+}
+
+TypeInfo = record {
+  name : string,
+  realType : RealType
+}
+
+Types = array of TypeInfo

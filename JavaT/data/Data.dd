@@ -1,0 +1,112 @@
+Data
+cpp
+
+int
+basic
+
+string
+basic
+
+StringArray = array of string
+IntArray = array of int
+
+Expressions = array of Expression
+MergeStatementFake = array of MergeStatement
+
+VariableInitializer = variant {
+  default,
+  value : Expression
+}
+
+VariableDeclarator = record {
+  type : string,
+  name : string,
+  value : VariableInitializer
+}
+
+Params = array of VariableDeclarator
+
+CreatingExpression = record {
+  type : string,
+  params : Params
+}
+
+IdentifierExpression = record {
+  value : string
+}
+
+Expression = variant {
+  empty,
+  variableDeclaration : VariableDeclarator,
+  creatingExpression : CreatingExpression,
+  identifier : IdentifierExpression
+}
+
+Statement = variant {
+  empty,
+  expression : Expression,
+  block : Statement,
+  merge : MergeStatement,
+  return : Expression
+}
+
+MergeStatement = record {
+  first : Statement,
+  second : Statement
+}
+
+Modifier = variant {
+  public,
+  static,
+  private
+}
+
+Modifiers = array of Modifier
+
+MethodDeclarator = record {
+  modifiers : Modifiers,
+  type : string,
+  name : string,
+  params : Params,
+  statement : Statement
+}
+
+ClassElem = variant {
+  variableDeclarator : VariableDeclarator,
+  methodDeclarator : MethodDeclarator
+}
+
+ClassElems = array of ClassElem
+
+Class = record {
+  modifiers : Modifiers,
+  name : string,
+  classElems : ClassElems
+}
+
+EnviromentElement = variant {
+  method : MethodDeclarator
+  variable : VariableDeclarator
+}
+
+Enviroment = array of EnviromentElement
+
+Classes = array of Class
+
+Packages = array of string
+
+Imports = array of string
+
+JavaFile = record {
+  packages : Packages,
+  imports : Imports,
+  classes : Classes
+}
+
+Lang = variant {
+  cpp, 
+  php,
+  cs
+}
+
+
