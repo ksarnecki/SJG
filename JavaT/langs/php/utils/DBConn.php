@@ -1,4 +1,7 @@
-﻿<?
+<?php
+
+  include 'SDBResult.php';
+
   class DBConn {
     var $host;
     var $user;
@@ -20,16 +23,22 @@
       $this->doConnect($host, $user, $pass, $dbname);
     }
 
+    function Execute($query) {
+      echo $query;
+      $this->Query($query);
+    }
+
     function Query($query) {
       //echo "QUERY: ".$query.'<br>';
       $x = mysql_query($query, $this->db);
+      echo mysql_error($this->db);
       if ($x===FALSE) {
-        Err::log("QUERY:[".$query."]" . mysql_error($this->db));
+        //Err::log("QUERY:[".$query."]" . mysql_error($this->db));
         $this->doConnect($this->host, $this->user, $this->pass, $this->dbname);
         $x = mysql_query($query, $this->db);
 
         if ($x===FALSE) {
-          Err::log("QUERY#2:[".$query."]" . mysql_error($this->db));
+          //Err::log("QUERY#2:[".$query."]" . mysql_error($this->db));
           return new SDBResult(null);
         }
         return new SDBResult($x);
@@ -51,4 +60,3 @@
     }
   };
 ?>
-             
