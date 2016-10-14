@@ -44,11 +44,12 @@ const int RealType::_TypeJavaLangString = 1;
 const int RealType::_TypeJavaLangArray = 2;
 const int RealType::_TypeJavaUtilRegexPattern = 3;
 const int RealType::_TypeJavaUtilRegexMatcher = 4;
-const int RealType::_TypeJavaUtilHashMap = 5;
-const int RealType::_TypeJavaUtilMapEntry = 6;
-const int RealType::_TypeLkDBConn = 7;
-const int RealType::_TypeLkSDBResult = 8;
-const int RealType::_TypeUnknown = 9;
+const int RealType::_TypeJavaUtilArrayList = 5;
+const int RealType::_TypeJavaUtilHashMap = 6;
+const int RealType::_TypeJavaUtilMapEntry = 7;
+const int RealType::_TypeLkDBConn = 8;
+const int RealType::_TypeLkSDBResult = 9;
+const int RealType::_TypeUnknown = 10;
 void RealType::init(int type, void* ptr) {
   if (type==_TypeJavaLangInteger) {
     _type = type;
@@ -63,6 +64,9 @@ void RealType::init(int type, void* ptr) {
     _type = type;
     _ptr = 0;
   } else if (type==_TypeJavaUtilRegexMatcher) {
+    _type = type;
+    _ptr = 0;
+  } else if (type==_TypeJavaUtilArrayList) {
     _type = type;
     _ptr = 0;
   } else if (type==_TypeJavaUtilHashMap) {
@@ -100,6 +104,10 @@ void RealType::clean() {
     if (_ptr!=0)
       throw Exception("RealType::clean()");
   } else if (_type==_TypeJavaUtilRegexMatcher) {
+    _type = -1;
+    if (_ptr!=0)
+      throw Exception("RealType::clean()");
+  } else if (_type==_TypeJavaUtilArrayList) {
     _type = -1;
     if (_ptr!=0)
       throw Exception("RealType::clean()");
@@ -149,6 +157,9 @@ bool RealType::isJavaUtilRegexPattern() const {
 }
 bool RealType::isJavaUtilRegexMatcher() const {
   return _type==_TypeJavaUtilRegexMatcher;
+}
+bool RealType::isJavaUtilArrayList() const {
+  return _type==_TypeJavaUtilArrayList;
 }
 bool RealType::isJavaUtilHashMap() const {
   return _type==_TypeJavaUtilHashMap;
@@ -210,14 +221,16 @@ AnsiString RealType::toXML() const {
     else if (_type==4)
       _xml += "<javaUtilRegexMatcher/>";
     else if (_type==5)
-    _xml += "<javaUtilHashMap>" + ((HashMap*) _ptr)->toXML() + "</javaUtilHashMap>";
+      _xml += "<javaUtilArrayList/>";
     else if (_type==6)
-    _xml += "<javaUtilMapEntry>" + ((MapEntry*) _ptr)->toXML() + "</javaUtilMapEntry>";
+    _xml += "<javaUtilHashMap>" + ((HashMap*) _ptr)->toXML() + "</javaUtilHashMap>";
     else if (_type==7)
-      _xml += "<lkDBConn/>";
+    _xml += "<javaUtilMapEntry>" + ((MapEntry*) _ptr)->toXML() + "</javaUtilMapEntry>";
     else if (_type==8)
-      _xml += "<lkSDBResult/>";
+      _xml += "<lkDBConn/>";
     else if (_type==9)
+      _xml += "<lkSDBResult/>";
+    else if (_type==10)
       _xml += "<unknown/>";
     else
       throw Exception("RealType::toXML(" + AnsiString(_type) + ")");
@@ -255,6 +268,12 @@ RealType RealType::createJavaUtilRegexPattern() {
 RealType RealType::createJavaUtilRegexMatcher() {
   RealType _value;
   _value._type = _TypeJavaUtilRegexMatcher;
+  _value._ptr = 0;
+  return _value;
+}
+RealType RealType::createJavaUtilArrayList() {
+  RealType _value;
+  _value._type = _TypeJavaUtilArrayList;
   _value._ptr = 0;
   return _value;
 }

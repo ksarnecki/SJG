@@ -1,14 +1,10 @@
-#include "CSString.h"
+#include "PHPString.h"
 
-AnsiString CSString::name() {
+AnsiString PHPString::name() {
   return "String";
 }
 
-AnsiString CSString::rename() {
-  return "string";
-}
-
-Expression CSString::changeMethod(const MultiIdentifier& mi) {
+Expression PHPString::changeMethod(const MultiIdentifier& mi) {
   Expression obj = mi.getLex();
   Expression fun = mi.getRex();
   if(obj.isIdentifier() && obj.asIdentifier().getValue() == name()) {
@@ -17,53 +13,36 @@ Expression CSString::changeMethod(const MultiIdentifier& mi) {
     if(fun.isIdentifier()) {
       //zmienne
     } else if(fun.isFunctionCallExpression()) {
-     
+      //metody
       FunctionCallExpression fce = fun.asFunctionCallExpression();
       if(fce.getName().isIdentifier()) {
         AnsiString method = fce.getName().asIdentifier().getValue();
         CallParams p = fce.getParams();
-        if(method=="indexOf") {
-          FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("IndexOf")),p);
-          MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
-          return Expression::createMultiIdentifier(m);
-        }
-        if(method=="replaceAll") {
-          CallParams p2;
-          p2.Insert(obj);
-          p2.Insert(p[0]);
-          p2.Insert(p[1]);
-          FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Replace")),p2);
-          MultiIdentifier m = MultiIdentifier(Expression::createIdentifier(IdentifierExpression("System.Text.RegularExpressions.Regex")), Expression::createFunctionCallExpression(fce));
-          return Expression::createMultiIdentifier(m);
-        }
-        if(method=="split") {
-          CallParams p2;
-          p2.Insert(obj);
-          p2.Insert(p[0]);
-          FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Split")),p2);
-          MultiIdentifier m = MultiIdentifier(Expression::createIdentifier(IdentifierExpression("System.Text.RegularExpressions.Regex")), Expression::createFunctionCallExpression(fce));
-          return Expression::createMultiIdentifier(m);
+        if(method=="charAt" && p.Size()>0) {
+          ArrayIdentifier ai = ArrayIdentifier(obj, p[0]);
+          return Expression::createArrayIdentifier(ai); 
         }
         if(method=="length") {
-          MultiIdentifier m = MultiIdentifier(obj, Expression::createIdentifier(IdentifierExpression("Length")));
-          return Expression::createMultiIdentifier(m);
+          CallParams p;
+          p.Insert(obj);
+          Expression e1 = Expression::createIdentifier(IdentifierExpression("strlen"));
+          FunctionCallExpression fce = FunctionCallExpression(e1, p);
+          return Expression::createFunctionCallExpression(fce);
+        }
+        if(method=="equals") {
+          TestingExpression te = TestingExpression(obj, p[0], TestingOperator::createEq());
+          return Expression::createTestingExpression(te);
         }
         if(method=="substring") {
           if(p.Size()==2) {
+            CallParams pc;
+            pc.Insert(obj);
+            pc.Insert(p[0]);
             Expression nbe1 = Expression::createNumericBinaryExpression(NumericBinaryExpression(p[1],p[0],NumericOperator::createSub()));
-            Expression nbe2 = Expression::createNumericBinaryExpression(NumericBinaryExpression(nbe1,Expression::createIdentifier(IdentifierExpression("1")),NumericOperator::createAdd()));
-            p[1]=nbe2;
-            FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Substring")),p);
-            MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
-            return Expression::createMultiIdentifier(m);
-          } else if(p.Size()==1) {
-            FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Substring")),p);
-            MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
-            return Expression::createMultiIdentifier(m);
-          } else {
-            FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("Substring")),p);
-            MultiIdentifier m = MultiIdentifier(obj, Expression::createFunctionCallExpression(fce));
-            return Expression::createMultiIdentifier(m);
+            Expression nbe2 = Expression::createNumericBinaryExpression(NumericBinaryExpression(nbe1,Expression::createIdentifier(IdentifierExpression("0")),NumericOperator::createAdd()));
+            pc.Insert(nbe2);
+            FunctionCallExpression fce = FunctionCallExpression(Expression::createIdentifier(IdentifierExpression("substr")),pc);
+            return Expression::createFunctionCallExpression(fce);
           }
         }
       }

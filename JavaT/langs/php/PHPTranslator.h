@@ -15,8 +15,9 @@
 #include "support/CSMapEntry.h"
 */
 #include "support/PHPHashMap.h"
-
+#include "support/PHPArrayList.h"
 #include "support/PHPArray.h"
+#include "support/PHPString.h"
 /*
 #include "support/CSPattern.h"
 #include "support/CSMatcher.h"
@@ -62,6 +63,7 @@ class PHPTranslator : public Translator {
   virtual void prepareNumericUnaryExpression(const NumericUnaryExpression&, Types&, Builder&);
   virtual void prepareCondOperatorExpression(const CondOperatorExpression&, Types&, Builder&);
   virtual void prepareStringExpression(const StringExpression&, Types&, Builder&);
+  virtual void prepareCharExpression(const CharExpression&, Types&, Builder&);
   virtual void prepareFloatExpression(const FloatExpression&, Types&, Builder&);
   virtual void prepareArrayCreatingExpression(const ArrayCreatingExpression&, Types&, Builder&);
   virtual void prepareAwaitExpression(const AwaitExpression&, Types&, Builder&);

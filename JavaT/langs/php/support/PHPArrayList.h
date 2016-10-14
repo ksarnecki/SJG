@@ -1,10 +1,9 @@
-#ifndef PHP_STRING_H
-#define PHP_STRING_H
+#ifndef PHP_ARRAYLIST_H
+#define PHP_ARRAYLIST_H
 
 #include "LexicalData.h"
-#include "Translator.h"
 
-class PHPString {
+class PHPArrayList {
   public:
     static AnsiString name();
     

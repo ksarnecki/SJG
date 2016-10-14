@@ -17,7 +17,7 @@ void PHPTranslator::prepareClassEnd(Types& types, Builder& builder) {
 }
     
 void PHPTranslator::prepareClassVariableDeclaration(const VariableDeclarator& v, Types& types, Builder& builder) {
-	builder.append("/*prepareClassVariableDeclaration*/");
+	prepareVariableDeclaratorStatement(v, types, builder);
 }
 
 void PHPTranslator::prepareModifier(const Modifier& m, Types& types, Builder& builder) {
@@ -29,6 +29,8 @@ void PHPTranslator::prepareModifier(const Modifier& m, Types& types, Builder& bu
     builder.append("static");
   } else if(m.isAsync()) {
     builder.append("async");
+  } else if(m.isFinal()) {
+    
   } else 
     throw Exception("Unsupported modifier");
 }
@@ -91,11 +93,22 @@ void PHPTranslator::preapreTestingOperator(const TestingOperator& op, Types& typ
 }
 
 void PHPTranslator::prepareVariableAssigmentExpression(const VariableAssigment& va, Types& types, Builder& builder) {
+  if(va.getObj().isVariableDeclarator())
+    prepareModifiers(va.getObj().asVariableDeclarator().getModifiers(), types, builder); //do zmiany
   prepareExpression(va.getObj(), types, builder);
   builder.append("=");
   prepareExpression(va.getValue(), types, builder );
 }
 void PHPTranslator::prepareCreatingExpression(const CreatingExpression& ce, Types& types, Builder& builder) {
+  if(ce.getType().isIdentifier() && ce.getType().asIdentifier().getValue().Pos("Array")>0) {
+    builder.append("array(0)");
+    return;
+  }
+  if(ce.getType().isIdentifier() && ce.getType().asIdentifier().getValue().Pos("Integer")>0 && ce.getParams().Size()>0) {
+    prepareExpression(ce.getParams()[0], types, builder);
+    return;
+  }
+  builder.append("new ");
   prepareExpression(ce.getType(), types, builder);
   builder.append("(");
   CallParams cp = ce.getParams();
@@ -109,28 +122,22 @@ void PHPTranslator::prepareCreatingExpression(const CreatingExpression& ce, Type
 
 void PHPTranslator::prepareIdentifierExpression(const IdentifierExpression& ie, Types& types, Builder& builder) {
   AnsiString identifier = ie.getValue();
-  /*if(identifier == CSHashMap::name()) {
-    identifier = CSHashMap::rename();
-  } else if(identifier == CSMatcher::name()) {
-    identifier = CSMatcher::rename();
-  } else if(identifier == CSPattern::name()) {
-    identifier = CSPattern::rename();
-  } else if(identifier == CSInteger::name()) {
-    identifier = CSInteger::rename();
-  } else if(identifier == CSString::name()) {
-    identifier = CSString::rename();
-  }*/
   if(identifier[identifier.Length()]=='"' || (identifier[identifier.Length()]>='0' && identifier[identifier.Length()]<='9')) {
     builder.append(identifier);
     return;
   }
-  //funkcje wbudowane
-  if(identifier=="count") { 
+  if(identifier=="count" || identifier=="strlen" || identifier=="substr") { 
     builder.append(identifier);
     return;
   }
   AnsiString act = builder.act();
-  if(act.Length()==0 || (act.Length()>1 && act[act.Length()-1]!='-' && act[act.Length()]!='>'))
+  if(act.Length()>0 && act[act.Length()-1]==':') {
+    if(findTypePos(identifier, types)>0)
+      builder.append("$");
+    builder.append(identifier);
+    return;
+  }
+  if((act.Length()==0 || (act[act.Length()-1]!='-' && act[act.Length()]!='>')) && !(identifier[1]>='A' && identifier[1]<='Z') ) // do poprawy
     builder.append("$");
   builder.append(identifier);
 }
@@ -142,69 +149,39 @@ void PHPTranslator::prepareArrayIdentifierExpression(const ArrayIdentifier& aie,
 }
 void PHPTranslator::prepareMultiIdentifierExpression(const MultiIdentifier& mi, Types& types, Builder& builder) {
   RealType r = getType(mi.getLex(), types);
-   
-   
-	  if(r.isJavaLangArray()) {
-      Expression e = PHPArray::changeMethod(mi);
-      if(!e.isEmpty()) {
-        prepareExpression(e, types, builder);
-        return;
-      }
-	  }
-    /*
-	  if(r.isLkSDBResult()) {
-		Expression e = CSSDBResult::changeMethod(mi);
-		if(!e.isEmpty()) {
-		  prepareExpression(e, types, builder);
-		  return;
-		}
-	  }*/
-	  if(r.isJavaUtilHashMap()) {
-		  Expression e = PHPHashMap::changeMethod(mi);
-		  if(!e.isEmpty()) {
-		    prepareExpression(e, types, builder);
-		  return;
-		}
-	  }
-    /*
-	  if(r.isJavaUtilRegexPattern()) {
-		Expression e = CSPattern::changeMethod(mi);
-		if(!e.isEmpty()) {
-		  prepareExpression(e, types, builder);
-		  return;
-		}
-	  }
-	  if(r.isJavaUtilRegexMatcher()) {
-		Expression e = CSMatcher::changeMethod(mi);
-		  if(!e.isEmpty()) {
-		  prepareExpression(e, types, builder);
-		  return;
-		}
-	  }
-	  if(r.isLkDBConn()) {
-		Expression e = CSDBConn::changeMethod(mi);
-		if(!e.isEmpty()) {
-		  prepareExpression(e, types, builder);
-		  return;
-		}
-	  }
-	  if(r.isJavaLangString()) {
-		Expression e = CSString::changeMethod(mi);
-		if(!e.isEmpty()) {
-		  prepareExpression(e, types, builder);
-		  return;
-		}
-    if(r.isJavaUtilMapEntry()) {
-      Expression e = CSMapEntry::changeMethod(mi);
-      if(!e.isEmpty()) {
-        prepareExpression(e, types, builder);
-        return;
-      }
+  if(r.isJavaLangArray()) {
+    Expression e = PHPArray::changeMethod(mi);
+    if(!e.isEmpty()) {
+      prepareExpression(e, types, builder);
+      return;
     }
   }
-  */
+  if(r.isJavaUtilArrayList()) {
+    Expression e = PHPArrayList::changeMethod(mi);
+    if(!e.isEmpty()) {
+      prepareExpression(e, types, builder);
+      return;
+    }
+  }
+  if(r.isJavaLangString()) {
+    Expression e = PHPString::changeMethod(mi);
+    if(!e.isEmpty()) {
+      prepareExpression(e, types, builder);
+      return;
+    }
+  }
+  if(r.isJavaUtilHashMap()) {
+    Expression e = PHPHashMap::changeMethod(mi);
+    if(!e.isEmpty()) {
+      prepareExpression(e, types, builder);
+      return;
+    }
+  }
   prepareExpression(mi.getLex(), types, builder);
-  builder.append("->");
+  if(mi.getLex().isIdentifier() && mi.getLex().asIdentifier().getValue()[1] <='Z') //brzydkie do poprawy, dodać sprawdzenie czy obiekt jest klasą czy instancją 
+    builder.append("::");
+  else 
+    builder.append("->");
   prepareExpression(mi.getRex(), types, builder);
 }
 void PHPTranslator::prepareTemplateIdentifierExpression(const TemplateIdentifier& ti, Types& types, Builder& builder) {
@@ -244,7 +221,13 @@ void PHPTranslator::prepareTestingExpression(const TestingExpression& te, Types&
 }
 void PHPTranslator::prepareNumericBinaryExpression(const NumericBinaryExpression& nbe, Types& types, Builder& builder) {
   prepareExpression(nbe.getLex(), types, builder);
-  preapreNumericOperator(nbe.getOp(), types, builder);
+  //builder.append("/*"+nbe.getLex().toXML()+"=>" +getType(nbe.getLex(), types).toXML()+ "*/");
+  if(nbe.getOp().isAdd() && (getType(nbe.getLex(), types).isJavaLangString() || getType(nbe.getRex(), types).isJavaLangString()))
+    builder.append(".");
+  else if(nbe.getOp().isAas() && getType(nbe.getLex(), types).isJavaLangString()) 
+    builder.append(".=");
+  else 
+    preapreNumericOperator(nbe.getOp(), types, builder);
   prepareExpression(nbe.getRex(), types, builder);
 }
 void PHPTranslator::prepareNumericUnaryExpression(const NumericUnaryExpression& nue, Types& types, Builder& builder) {
@@ -262,6 +245,9 @@ void PHPTranslator::prepareCondOperatorExpression(const CondOperatorExpression& 
   builder.append(" : ");
   prepareExpression(coe.getFalseExp(), types, builder);
   builder.append(")");
+}
+void PHPTranslator::prepareCharExpression(const CharExpression& se, Types& types, Builder& builder) {
+  builder.append(se.getValue());
 }
 void PHPTranslator::prepareStringExpression(const StringExpression& se, Types& types, Builder& builder) {
   builder.append("\""+se.getValue()+"\"");
@@ -281,6 +267,7 @@ void PHPTranslator::prepareBlockStatement(const BlockStatement& s, Types& types,
 
 void PHPTranslator::prepareVariableDeclarator(const VariableDeclarator& v, Types& types, Builder& builder) {
  types.Insert(getTypeInfo(v, types));
+ prepareModifiers(v.getModifiers(), types, builder);
  prepareExpression(v.getName(), types, builder);
  if(!v.getValue().isDefault()) {
    builder.append(" = ");

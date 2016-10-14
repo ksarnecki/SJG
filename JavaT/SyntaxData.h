@@ -50,6 +50,7 @@ class RealType {
   static const int _TypeJavaLangArray;
   static const int _TypeJavaUtilRegexPattern;
   static const int _TypeJavaUtilRegexMatcher;
+  static const int _TypeJavaUtilArrayList;
   static const int _TypeJavaUtilHashMap;
   static const int _TypeJavaUtilMapEntry;
   static const int _TypeLkDBConn;
@@ -68,6 +69,7 @@ public:
   virtual bool isJavaLangArray() const;
   virtual bool isJavaUtilRegexPattern() const;
   virtual bool isJavaUtilRegexMatcher() const;
+  virtual bool isJavaUtilArrayList() const;
   virtual bool isJavaUtilHashMap() const;
   virtual bool isJavaUtilMapEntry() const;
   virtual bool isLkDBConn() const;
@@ -90,6 +92,7 @@ public:
   static RealType createJavaLangArray(const RealType&);
   static RealType createJavaUtilRegexPattern();
   static RealType createJavaUtilRegexMatcher();
+  static RealType createJavaUtilArrayList();
   static RealType createJavaUtilHashMap(const HashMap&);
   static RealType createJavaUtilMapEntry(const MapEntry&);
   static RealType createLkDBConn();

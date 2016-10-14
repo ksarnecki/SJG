@@ -136,6 +136,8 @@ RealType Translator::getType(const Expression& e, const Types& types) {
     RealType rt = getType(e.asMultiIdentifier().getLex(), types);
     return getMethodType(rt, e.asMultiIdentifier().getRex());
   }
+  if(e.isStringExpression())
+    return RealType::createJavaLangString();
   return RealType::createUnknown();
 }
 

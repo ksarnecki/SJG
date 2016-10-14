@@ -30,25 +30,28 @@ void Builder::next() {
 
 void Builder::print() {
   int ix=0;
+  bool inString = false;
   for(int i=0;i<lines.Size();i++) {
-    bool skip = true;
-    for(int j=1;j<=lines[i].Length();j++) {
-      if(lines[i][j]!=' ' && lines[i][j]!='\n')
-        skip = false;
-    }
-    if(skip)
+    lines[i] = lines[i].Trim();
+    if(lines[i].Length()==0)
       continue;
     ind(ix*2);
     for(int j=1;j<=lines[i].Length();j++) {
-      if(lines[i][j]=='{') {
+      if( (lines[i][j]=='\"' || lines[i][j]=='\'') && (j==1 || lines[i][j-1]!='\\')) {
+        inString=!inString;
+      }
+      
+      if(!inString && lines[i][j]=='{') {
         printf("{\n");
         ix++;
         ind(ix*2);
-      } else if(lines[i][j]=='}') {
+        continue;
+      } else if(!inString && lines[i][j]=='}') {
         printf("\n");
         ix--;
         ind(ix*2);
         printf("}\n");
+        continue;
       } else {
         printf("%c", lines[i][j]);
       }

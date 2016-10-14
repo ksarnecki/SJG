@@ -12,7 +12,7 @@ extern "C"
 %}
 
 %%
-\"[^\"]*\" { yylval = (int) strdup(yytext); return STRING; }
+\"(\\.|[^"])*\" { yylval = (int) strdup(yytext); return STRING; }
 \'[^\']+\' { yylval = (int) strdup(yytext); return CHAR; }
 \<[a-zA-Z0-9\_\ \,]+\> { yylval = (int) strdup(yytext); return TEMPL; }
 [0-9]+ { yylval = (int) strdup(yytext); return INT;}

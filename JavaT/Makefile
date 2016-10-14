@@ -4,7 +4,7 @@ CC=g++
 
 CORE= JavaT.o StringBuffer.o AnsiString.o Exception.o LineStream.o LexicalData.o SyntaxData.o Translator.o  Builder.o
 CSOBJ= CSTranslator.o CSHashMap.o CSArray.o CSMatcher.o CSPattern.o CSDBConn.o CSString.o CSSDBResult.o CSMapEntry.o CSInteger.o
-PHPOBJ= PHPTranslator.o PHPArray.o PHPHashMap.o
+PHPOBJ= PHPTranslator.o PHPArray.o PHPHashMap.o PHPArrayList.o PHPString.o
 
 all: JavaT
 
@@ -21,10 +21,10 @@ SyntaxData.o: SyntaxData.cpp
 	$(CC) $(CFLAGS) SyntaxData.cpp
 	
 LexicalData.cpp: data/LexicalData.dd
-	../CodeGen4/Codegen -xml < data/LexicalData.dd
+	../CodeGen/Codegen -xml < data/LexicalData.dd
 
 SyntaxData.cpp: data/SyntaxData.dd
-	../CodeGen4/Codegen -xml < data/SyntaxData.dd
+	../CodeGen/Codegen -xml < data/SyntaxData.dd
 
 Builder.o: Builder.cpp
 	$(CC) $(CFLAGS) Builder.cpp
@@ -68,8 +68,14 @@ PHPTranslator.o: langs/php/PHPTranslator.cpp
 PHPArray.o: langs/php/support/PHPArray.cpp 
 	$(CC) $(CFLAGS) langs/php/support/PHPArray.cpp 
 
+PHPArrayList.o: langs/php/support/PHPArrayList.cpp 
+	$(CC) $(CFLAGS) langs/php/support/PHPArrayList.cpp  
+
 PHPHashMap.o: langs/php/support/PHPHashMap.cpp 
 	$(CC) $(CFLAGS) langs/php/support/PHPHashMap.cpp 
+  
+PHPString.o: langs/php/support/PHPString.cpp 
+	$(CC) $(CFLAGS) langs/php/support/PHPString.cpp 
   
 AnsiString.o: ../Common/AnsiString.cpp
 	$(CC) $(CFLAGS) ../Common/AnsiString.cpp

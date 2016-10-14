@@ -16,6 +16,7 @@ RealType = variant {
   javaLangArray : RealType,
   javaUtilRegexPattern,
   javaUtilRegexMatcher,
+  javaUtilArrayList,
   javaUtilHashMap : HashMap,
   javaUtilMapEntry : MapEntry,
   lkDBConn,
