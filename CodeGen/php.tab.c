@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.4"
+#define YYBISON_VERSION "3.0.2"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -127,18 +127,9 @@ static AnsiString xboxs(int v) {
 }
 
 DataFileKind mkFileType(const AnsiString type) {
-  if (type=="cpp")
-    return DataFileKind::createCpp();
-  else if (type=="php")
-    return DataFileKind::createPhp();
-  else if (type=="java")
+  if (type=="java")
     return DataFileKind::createJava();
-  else if (type=="javascript")
-    return DataFileKind::createJavascript();
-  else if (type=="cs")
-    return DataFileKind::createCs();
-  else
-    throw Exception("Unknown file type ["+type+"]");
+  throw Exception("Unknown file type ["+type+"]");
 }
 
 DataTypeArray mergeDataTypeArray(DataTypeArray a, DataTypeArray b) {
@@ -155,7 +146,7 @@ DataFileBase* codegenfresult = 0;
 DataTypeArray inlineTypes;
 
 
-#line 159 "php.tab.c" /* yacc.c:339  */
+#line 150 "php.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -226,7 +217,7 @@ int codegenparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 230 "php.tab.c" /* yacc.c:358  */
+#line 221 "php.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -524,11 +515,11 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    90,    90,    92,    93,    95,    96,    98,    99,   100,
-     101,   102,   105,   107,   108,   109,   111,   113,   114,   115,
-     116,   117,   118,   119,   121,   122,   123,   125,   126,   127,
-     128,   129,   130,   131,   132,   134,   135,   136,   137,   138,
-     139,   140,   141
+       0,    81,    81,    83,    84,    86,    87,    89,    90,    91,
+      92,    93,    96,    98,    99,   100,   102,   104,   105,   106,
+     107,   108,   109,   110,   112,   113,   114,   116,   117,   118,
+     119,   120,   121,   122,   123,   125,   126,   127,   128,   129,
+     130,   131,   132
 };
 #endif
 
@@ -1337,223 +1328,223 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 90 "data/php.y" /* yacc.c:1646  */
+#line 81 "data/php.y" /* yacc.c:1646  */
     { codegenfresult = new DataFileBase(xbox<AnsiString>((yyvsp[-2])), mkFileType(xbox<AnsiString>((yyvsp[-1]))), mergeDataTypeArray(inlineTypes, xbox<DataTypeArray>((yyvsp[0]))));}
-#line 1343 "php.tab.c" /* yacc.c:1646  */
+#line 1334 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 92 "data/php.y" /* yacc.c:1646  */
+#line 83 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<AnsiString>(xboxs((yyvsp[0])));}
-#line 1349 "php.tab.c" /* yacc.c:1646  */
+#line 1340 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 93 "data/php.y" /* yacc.c:1646  */
+#line 84 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<AnsiString>(xboxs((yyvsp[0])));}
-#line 1355 "php.tab.c" /* yacc.c:1646  */
+#line 1346 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 95 "data/php.y" /* yacc.c:1646  */
+#line 86 "data/php.y" /* yacc.c:1646  */
     { DataTypeArray d = xbox<DataTypeArray>((yyvsp[-1])); d.Insert(xbox<DataType>((yyvsp[0]))); (yyval) = new Box<DataTypeArray>(d);}
-#line 1361 "php.tab.c" /* yacc.c:1646  */
+#line 1352 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 96 "data/php.y" /* yacc.c:1646  */
+#line 87 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<DataTypeArray>(DataTypeArray());}
-#line 1367 "php.tab.c" /* yacc.c:1646  */
+#line 1358 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 105 "data/php.y" /* yacc.c:1646  */
+#line 96 "data/php.y" /* yacc.c:1646  */
     { AnsiString name = xbox<AnsiString>((yyvsp[-1])); (yyval) = new Box<DataType>(DataType(name,DataTypeKind::createBasic(name)));}
-#line 1373 "php.tab.c" /* yacc.c:1646  */
+#line 1364 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 107 "data/php.y" /* yacc.c:1646  */
+#line 98 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<AnsiString>("int");}
-#line 1379 "php.tab.c" /* yacc.c:1646  */
+#line 1370 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 108 "data/php.y" /* yacc.c:1646  */
+#line 99 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<AnsiString>("bool");}
-#line 1385 "php.tab.c" /* yacc.c:1646  */
+#line 1376 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 109 "data/php.y" /* yacc.c:1646  */
+#line 100 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<AnsiString>("string");}
-#line 1391 "php.tab.c" /* yacc.c:1646  */
+#line 1382 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 111 "data/php.y" /* yacc.c:1646  */
+#line 102 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<DataType> (DataType(xboxs((yyvsp[-2])), DataTypeKind::createExternal(ExternalType(xboxs((yyvsp[0]))))));}
-#line 1397 "php.tab.c" /* yacc.c:1646  */
+#line 1388 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 113 "data/php.y" /* yacc.c:1646  */
+#line 104 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<DataType>(DataType(xboxs((yyvsp[-5])), DataTypeKind::createRecord(xbox<RecordType>((yyvsp[-1])))));}
-#line 1403 "php.tab.c" /* yacc.c:1646  */
+#line 1394 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 114 "data/php.y" /* yacc.c:1646  */
+#line 105 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<DataType>(DataType(xboxs((yyvsp[-4])), DataTypeKind::createRecord(RecordType())));}
-#line 1409 "php.tab.c" /* yacc.c:1646  */
+#line 1400 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 115 "data/php.y" /* yacc.c:1646  */
+#line 106 "data/php.y" /* yacc.c:1646  */
     {RecordType r = xbox<RecordType>((yyvsp[-2])); r.Insert(xbox<RecordField>((yyvsp[0]))); (yyval) = new Box<RecordType> (r);}
-#line 1415 "php.tab.c" /* yacc.c:1646  */
+#line 1406 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 116 "data/php.y" /* yacc.c:1646  */
+#line 107 "data/php.y" /* yacc.c:1646  */
     { RecordType r = RecordType(); r.Insert(xbox<RecordField>((yyvsp[0]))); (yyval) = new Box<RecordType> (r); }
-#line 1421 "php.tab.c" /* yacc.c:1646  */
+#line 1412 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 117 "data/php.y" /* yacc.c:1646  */
+#line 108 "data/php.y" /* yacc.c:1646  */
     {  DataType inlineType = xbox<DataType>((yyvsp[0])); inlineTypes.Insert(inlineType); (yyval) = new Box<RecordField>(RecordField(xboxs((yyvsp[-2])), inlineType.getName())); }
-#line 1427 "php.tab.c" /* yacc.c:1646  */
+#line 1418 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 118 "data/php.y" /* yacc.c:1646  */
+#line 109 "data/php.y" /* yacc.c:1646  */
     { AnsiString name = xbox<AnsiString>((yyvsp[0])); (yyval) = new Box<RecordField>(RecordField(xboxs((yyvsp[-2])), name));}
-#line 1433 "php.tab.c" /* yacc.c:1646  */
+#line 1424 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 119 "data/php.y" /* yacc.c:1646  */
+#line 110 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<RecordField>(RecordField(xboxs((yyvsp[-2])), xboxs((yyvsp[0]))));}
-#line 1439 "php.tab.c" /* yacc.c:1646  */
+#line 1430 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 121 "data/php.y" /* yacc.c:1646  */
+#line 112 "data/php.y" /* yacc.c:1646  */
     {  DataType inlineType = xbox<DataType>((yyvsp[0])); inlineTypes.Insert(inlineType);  (yyval) = new Box<DataType>(DataType(xboxs((yyvsp[-3])), DataTypeKind::createArray(ArrayType(inlineType.getName())))); }
-#line 1445 "php.tab.c" /* yacc.c:1646  */
+#line 1436 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 122 "data/php.y" /* yacc.c:1646  */
+#line 113 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<DataType>(DataType(xboxs((yyvsp[-3])), DataTypeKind::createArray(ArrayType(xboxs((yyvsp[0]))))));}
-#line 1451 "php.tab.c" /* yacc.c:1646  */
+#line 1442 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 123 "data/php.y" /* yacc.c:1646  */
+#line 114 "data/php.y" /* yacc.c:1646  */
     {  (yyval) = new Box<DataType>(DataType(xboxs((yyvsp[-3])), DataTypeKind::createArray(ArrayType(xbox<AnsiString>((yyvsp[0]))))));}
-#line 1457 "php.tab.c" /* yacc.c:1646  */
+#line 1448 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 125 "data/php.y" /* yacc.c:1646  */
+#line 116 "data/php.y" /* yacc.c:1646  */
     {  (yyval) = new Box<DataType>(DataType(xboxs((yyvsp[-5])), DataTypeKind::createVariant(xbox<VariantType>((yyvsp[-1])))));}
-#line 1463 "php.tab.c" /* yacc.c:1646  */
+#line 1454 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 126 "data/php.y" /* yacc.c:1646  */
+#line 117 "data/php.y" /* yacc.c:1646  */
     { VariantType v = xbox<VariantType>((yyvsp[-2])); v.Insert(xbox<VariantField>((yyvsp[0]))); (yyval) = new Box<VariantType> (v);}
-#line 1469 "php.tab.c" /* yacc.c:1646  */
+#line 1460 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 127 "data/php.y" /* yacc.c:1646  */
+#line 118 "data/php.y" /* yacc.c:1646  */
     { VariantType v = xbox<VariantType>((yyvsp[-2])); v.Insert(xbox<VariantField>((yyvsp[0]))); (yyval) = new Box<VariantType> (v);}
-#line 1475 "php.tab.c" /* yacc.c:1646  */
+#line 1466 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 128 "data/php.y" /* yacc.c:1646  */
+#line 119 "data/php.y" /* yacc.c:1646  */
     { VariantType v = VariantType(); v.Insert(xbox<VariantField>((yyvsp[0]))); (yyval) = new Box<VariantType> (v);}
-#line 1481 "php.tab.c" /* yacc.c:1646  */
+#line 1472 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 129 "data/php.y" /* yacc.c:1646  */
+#line 120 "data/php.y" /* yacc.c:1646  */
     {  DataType inlineType = xbox<DataType>((yyvsp[0])); inlineTypes.Insert(inlineType); (yyval) = new Box<VariantField>(VariantField(xboxs((yyvsp[-2])),  VariantFieldKind::createType(inlineType.getName()))); }
-#line 1487 "php.tab.c" /* yacc.c:1646  */
+#line 1478 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 130 "data/php.y" /* yacc.c:1646  */
+#line 121 "data/php.y" /* yacc.c:1646  */
     { AnsiString name = xbox<AnsiString>((yyvsp[0])); (yyval) = new Box<VariantField>(VariantField(xboxs((yyvsp[-2])), VariantFieldKind::createType(name)));}
-#line 1493 "php.tab.c" /* yacc.c:1646  */
+#line 1484 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 131 "data/php.y" /* yacc.c:1646  */
+#line 122 "data/php.y" /* yacc.c:1646  */
     {(yyval) = new Box<VariantField>(VariantField(xboxs((yyvsp[-2])), VariantFieldKind::createType(xboxs((yyvsp[0])))));}
-#line 1499 "php.tab.c" /* yacc.c:1646  */
+#line 1490 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 132 "data/php.y" /* yacc.c:1646  */
+#line 123 "data/php.y" /* yacc.c:1646  */
     { (yyval) = new Box<VariantField>(VariantField(xboxs((yyvsp[0])), VariantFieldKind::createEmpty()));}
-#line 1505 "php.tab.c" /* yacc.c:1646  */
+#line 1496 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 134 "data/php.y" /* yacc.c:1646  */
+#line 125 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1511 "php.tab.c" /* yacc.c:1646  */
+#line 1502 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 135 "data/php.y" /* yacc.c:1646  */
+#line 126 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("basic"); }
-#line 1517 "php.tab.c" /* yacc.c:1646  */
+#line 1508 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 136 "data/php.y" /* yacc.c:1646  */
+#line 127 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("record"); }
-#line 1523 "php.tab.c" /* yacc.c:1646  */
+#line 1514 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 137 "data/php.y" /* yacc.c:1646  */
+#line 128 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("external"); }
-#line 1529 "php.tab.c" /* yacc.c:1646  */
+#line 1520 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 138 "data/php.y" /* yacc.c:1646  */
+#line 129 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("variant"); }
-#line 1535 "php.tab.c" /* yacc.c:1646  */
+#line 1526 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 139 "data/php.y" /* yacc.c:1646  */
+#line 130 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("int"); }
-#line 1541 "php.tab.c" /* yacc.c:1646  */
+#line 1532 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 140 "data/php.y" /* yacc.c:1646  */
+#line 131 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("string"); }
-#line 1547 "php.tab.c" /* yacc.c:1646  */
+#line 1538 "php.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 141 "data/php.y" /* yacc.c:1646  */
+#line 132 "data/php.y" /* yacc.c:1646  */
     { (yyval) = (int) strdup("bool"); }
-#line 1553 "php.tab.c" /* yacc.c:1646  */
+#line 1544 "php.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1557 "php.tab.c" /* yacc.c:1646  */
+#line 1548 "php.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1781,19 +1772,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 144 "data/php.y" /* yacc.c:1906  */
+#line 135 "data/php.y" /* yacc.c:1906  */
 
 
 int codegenlex(void);
 void codegenerror(const char *);
 
 #include "lex.codegen.c"
-
-#include "CPPGenerator.h"
-#include "PHPGenerator.h"
 #include "JavaGenerator.h"
-#include "JavascriptGenerator.h"
-#include "CSGenerator.h"
 
 #include <iostream>
 #include <fstream>

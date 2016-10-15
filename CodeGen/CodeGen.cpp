@@ -1,9 +1,5 @@
 #include "Parser.h"
-#include "CPPGenerator.h"
-#include "PHPGenerator.h"
 #include "JavaGenerator.h"
-#include "JavascriptGenerator.h"
-#include "CSGenerator.h"
 
 #include <iostream>
 #include <fstream>
@@ -61,19 +57,10 @@ int main(int argc, char* argv[]) {
   LineStream stream(lines);
   try {
     DataFileBase data = processData(stream);
-    if (data.getKind().isCpp()) {
-	  saveToFile(data.getFile() + ".h", generateHFile(data.getFile(), xml, sd, bin, json, data.getTypes()));
-	  saveToFile(data.getFile() + ".cpp", generateCppFile(data.getFile(), xml, sd, bin, json, data.getTypes()));
-    } else if (data.getKind().isPhp())
-	  saveToFile(data.getFile() + ".php", generatePHPFile(data.getFile(), data.getTypes()));
-    else if (data.getKind().isCs())
-	  saveToFile(data.getFile() + ".cs", generateCSFile(data.getFile(), bin, data.getTypes()));
-    else if (data.getKind().isJava())
+    if (data.getKind().isJava())
 	  saveToFile(generateJavaFiles(data.getFile(), onefile, arr, gstream, json, xml, strictNUll, ftl, j2j, serializable, iterable, data.getTypes()));
-    else if (data.getKind().isJavascript())
-	  saveToFile(data.getFile() + ".js", generateJavascriptFile(data.getFile(), data.getTypes()));
-    else
-	  throw Exception("DataFileKind");
+    else	  
+      throw Exception("DataFileKind");
   } catch (const Exception& exc) {
     std::cout << "Błąd: " << exc.Message.c_str() << std::endl;
     return 1;

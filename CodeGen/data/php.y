@@ -54,18 +54,9 @@ static AnsiString xboxs(int v) {
 }
 
 DataFileKind mkFileType(const AnsiString type) {
-  if (type=="cpp")
-    return DataFileKind::createCpp();
-  else if (type=="php")
-    return DataFileKind::createPhp();
-  else if (type=="java")
+  if (type=="java")
     return DataFileKind::createJava();
-  else if (type=="javascript")
-    return DataFileKind::createJavascript();
-  else if (type=="cs")
-    return DataFileKind::createCs();
-  else
-    throw Exception("Unknown file type ["+type+"]");
+  throw Exception("Unknown file type ["+type+"]");
 }
 
 DataTypeArray mergeDataTypeArray(DataTypeArray a, DataTypeArray b) {
@@ -147,12 +138,7 @@ int codegenlex(void);
 void codegenerror(const char *);
 
 #include "lex.codegen.c"
-
-#include "CPPGenerator.h"
-#include "PHPGenerator.h"
 #include "JavaGenerator.h"
-#include "JavascriptGenerator.h"
-#include "CSGenerator.h"
 
 #include <iostream>
 #include <fstream>
