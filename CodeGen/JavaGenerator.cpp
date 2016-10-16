@@ -1039,111 +1039,8 @@ AnsiString generateJavaVariantCode(const AnsiString& package, bool onefile, bool
   ret.Insert("}");
   return conv(ret);
 }
-static AnsiString mkJSONUtil(const AnsiString& package, bool j2j, bool onefile) {
-  DynSet<AnsiString> ret;
-  if (!onefile)
-    ret.Insert("package "+package+";");
-  if (onefile)
-    ret.Insert("final class JSONUtil {");
-  else
-    ret.Insert("public class JSONUtil {");
-  AnsiString lengthTag = "string.length()";
-  if (j2j)
-    lengthTag = "string.length";
-  ret.Insert("  public static String escape(String string) {");
-  ret.Insert("    if (string == null || "+lengthTag+" == 0)");
-  ret.Insert("      return \"\";");
-  ret.Insert("    char c = 0;");
-  ret.Insert("    int i = 0;");
-  ret.Insert("    int len = "+lengthTag+";");
-  ret.Insert("    String sb = \"\";");
-  ret.Insert("    String t;");
-  ret.Insert("    for (i = 0; i < len; i+=1) {;");
-  ret.Insert("      c = string.charAt(i);");
-  ret.Insert("      switch (c) {");
-  ret.Insert("        case '\\\\':");
-  ret.Insert("        case '\"':");
-  ret.Insert("          sb+=('\\\\');");
-  ret.Insert("          sb+=(c);");
-  ret.Insert("          break;");
-  ret.Insert("        case '/':");
-  ret.Insert("          sb+=('\\\\');");
-  ret.Insert("          sb+=(c);");
-  ret.Insert("          break;");
-  ret.Insert("        case '\\b':");
-  ret.Insert("          sb+=(\"\\\\b\");");
-  ret.Insert("          break;");
-  ret.Insert("        case '\\t':");
-  ret.Insert("          sb+=(\"\\\\t\");");
-  ret.Insert("          break;");
-  ret.Insert("        case '\\n':");
-  ret.Insert("          sb+=(\"\\\\n\");");
-  ret.Insert("          break;");
-  ret.Insert("        case '\\f':");
-  ret.Insert("          sb+=(\"\\\\f\");");
-  ret.Insert("          break;");
-  ret.Insert("        case '\\r':");
-  ret.Insert("          sb+=(\"\\\\r\");");
-  ret.Insert("          break;");
-  ret.Insert("        default:");
-  ret.Insert("          sb+=(c);");
-  ret.Insert("      }");
-  ret.Insert("    }");
-  ret.Insert("    return sb;");
-  ret.Insert("  }");
-  ret.Insert("  public static String unescape(String string) {");
-  ret.Insert("    char c = 0;");
-  ret.Insert("    int i = 0;");
-  ret.Insert("    int len = "+lengthTag+";");
-  ret.Insert("    boolean escaped = false;");
-  ret.Insert("    String sb = \"\";");
-  ret.Insert("    String t;");
-  ret.Insert("    for (i = 0; i < len; i+=1) {");
-  ret.Insert("      c = string.charAt(i);");
-  ret.Insert("      if (escaped) {");
-  ret.Insert("        switch (c) {");
-  ret.Insert("          case '\\\\':");
-  ret.Insert("            sb+=\"\\\\\";");
-  ret.Insert("            break;");
-  ret.Insert("          case '\\\"':");
-  ret.Insert("            sb+=\"\\\"\";");
-  ret.Insert("            break;");
-  ret.Insert("          case '/':");
-  ret.Insert("            sb+=\"/\";");
-  ret.Insert("            break;");
-  ret.Insert("          case 'b':");
-  ret.Insert("            sb+=(\"\\b\");");
-  ret.Insert("            break;");
-  ret.Insert("          case 't':");
-  ret.Insert("            sb+=(\"\\t\");");
-  ret.Insert("            break;");
-  ret.Insert("          case 'n':");
-  ret.Insert("            sb+=(\"\\n\");");
-  ret.Insert("            break;");
-  ret.Insert("          case 'f':");
-  ret.Insert("            sb+=(\"\\f\");");
-  ret.Insert("            break;");
-  ret.Insert("          case 'r':");
-  ret.Insert("            sb+=(\"\\r\");");
-  ret.Insert("            break;");
-  ret.Insert("        }");
-  ret.Insert("        escaped = false;");
-  ret.Insert("      } else {");
-  ret.Insert("        if (c == '\\\\') ");
-  ret.Insert("          escaped = true;");
-  ret.Insert("        else");
-  ret.Insert("          sb+=c;");
-  ret.Insert("      }");
-  ret.Insert("    }");
-  ret.Insert("    return sb;");
-  ret.Insert("  }");
-  ret.Insert("}");
-  return conv(ret);
-}
 static GenerateFiles generateJavaFiles(const AnsiString& file, bool stream, bool json, bool xml, bool isarr, bool strictNull, bool ftl, bool j2j, bool serializable, bool iterable, const DataTypeArray& data) {
   GenerateFiles files;
-  if (json)
-    files.Insert(GenerateFile("JSONUtil.java", mkJSONUtil(file, j2j, false)));
   for (int i=0;i<data.Size();i++) {
     DataType type = data[i];
     DataTypeKind kind = type.getKind();
@@ -1186,8 +1083,6 @@ static AnsiString mkJavaHeader(const AnsiString& package, bool stream, bool json
 }
 static GenerateFiles generateJavaFile(const AnsiString& file, bool stream, bool json, bool xml, bool isarr, bool strictNull, bool ftl, bool j2j, bool serializable, bool iterable, const DataTypeArray& data) {
   AnsiString code = mkJavaHeader(file, stream, json, isarr, ftl, j2j, serializable, iterable, data);
-  if (json)
-    code+=mkJSONUtil(file, j2j, true);
   for (int i=0;i<data.Size();i++) {
     DataType type = data[i];
     DataTypeKind kind = type.getKind();
