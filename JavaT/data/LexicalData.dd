@@ -1,0 +1,288 @@
+LexicalData
+cpp
+
+int
+basic
+
+string
+basic
+
+StringArray = array of string
+IntArray = array of int
+
+Expressions = array of Expression
+TestingExpressionFake = array of TestingExpression
+NumericBinaryExpressionFake = array of NumericBinaryExpression
+VariableDeclaratorFake = array of VariableDeclarator
+numericUnaryExpressionFake = array of NumericUnaryExpression
+MergeStatementFake = array of MergeStatement
+BlockStatementFake = array of BlockStatement
+ForStatementFake = array of ForStatement
+ForeachStatementFake = array of ForeachStatement
+WhileStatementFake = array of WhileStatement
+MultiIdentifierFake = array of MultiIdentifier
+VariableAssigmentFake = array of VariableAssigment
+CondOperatorExpressionFake = array of CondOperatorExpression
+ArrayIdentifierExpression = array of ArrayIdentifier
+IfStatementFake = array of IfStatement
+FunctionCallExpressionFake = array of FunctionCallExpression
+CreatingExpressionFake = array of CreatingExpression
+TemplateIdentifierFake = array of TemplateIdentifier
+CharExpressionFake = array of CharExpression
+ArrayCreatingExpressionFake = array of ArrayCreatingExpression
+AwaitExpressionFake = array of AwaitExpression
+
+Modifier = variant {
+  public,
+  static,
+  private,
+  async,
+  final
+}
+
+Modifiers = array of Modifier
+VariableInitializer = variant {
+  default,
+  value : Expression
+}
+
+
+IdentifierExpression = record {
+  value : string
+}
+
+StringExpression = record {
+  value : string
+}
+
+CharExpression = record {
+  value : string
+}
+
+FloatExpression = record {
+  value : string
+}
+
+Expression = variant {
+  empty,
+  variableAssigment : VariableAssigment,
+  variableDeclarator : VariableDeclarator,
+  creatingExpression : CreatingExpression,
+  identifier : IdentifierExpression,
+  arrayIdentifier : ArrayIdentifier,
+  multiIdentifier : MultiIdentifier,
+  templateIdentifier : TemplateIdentifier,
+  functionCallExpression : FunctionCallExpression,
+  testingExpression : TestingExpression,
+  numericBinaryExpression : NumericBinaryExpression,
+  numericUnaryExpression : NumericUnaryExpression,
+  condOperatorExpression : CondOperatorExpression,
+  stringExpression : StringExpression,
+  charExpression : CharExpression,
+  floatExpression : FloatExpression,
+  arrayCreatingExpression : ArrayCreatingExpression,
+  awaitExpression : AwaitExpression
+}
+
+VariableDeclarator = record {
+  modifiers : Modifiers,
+  type : Expression,
+  name : Expression,
+  value : VariableInitializer
+}
+
+Params = array of VariableDeclarator
+
+CallParams = array of Expression
+
+TemplateIdentifier = record {
+  type : Expression,
+  params : Expressions 
+}
+
+AwaitExpression = record {
+  exp : Expression
+}
+
+CreatingExpression = record {
+  type : Expression,
+  params : CallParams
+}
+
+ArrayCreatingExpression = record {
+  arr : Expression,
+  size : Expression
+}
+
+FunctionCallExpression = record {
+  name : Expression,
+  params : CallParams
+}
+
+ArrayIdentifier = record {
+  array : Expression,
+  index : Expression
+}
+
+CondOperatorExpression = record {
+  cond : Expression,
+  trueExp : Expression,
+  falseExp : Expression
+}
+
+VariableAssigment = record {
+  obj : Expression,
+  value : Expression
+}
+
+MultiIdentifier = record {
+  lex : Expression,
+  rex : Expression
+}
+
+TestingOperator = variant {
+  gr,
+  sm,
+  egr,
+  esm,
+  eq,
+  neq
+}
+
+NumericOperator = variant {
+  inc,
+  dec,
+  add,
+  sub,
+  mul,
+  div,
+  sas,
+  aas
+}
+
+TestingExpression = record {
+  lex : Expression,
+  rex : Expression,
+  op : TestingOperator
+}
+
+NumericBinaryExpression = record {
+  lex : Expression,
+  rex : Expression,
+  op : NumericOperator
+}
+
+NumericUnaryExpressionKind = variant {
+  prefix,
+  sufix
+}
+
+NumericUnaryExpression = record {
+  exp : Expression,
+  op : NumericOperator,
+  kind : NumericUnaryExpressionKind
+}
+
+Statement = variant {
+  empty,
+  variableDeclaration : VariableDeclarator,
+  expressionStatement : Expression,
+  blockStatement : BlockStatement,
+  mergeStatement : MergeStatement,
+  returnStatement : Expression,
+  forStatement : ForStatement,
+  foreachStatement : ForeachStatement,
+  whileStatement : WhileStatement,
+  ifStatement : IfStatement
+}
+
+BlockStatement = record {
+  body : Statement
+}
+
+MergeStatement = record {
+  first : Statement,
+  second : Statement
+}
+
+ForInit = variant {
+  expr : Expression,
+  decl : VariableDeclarator
+}
+
+ForeachStatement = record {
+  iterator : VariableDeclarator,
+  object : Expression,
+  body : Statement
+}
+
+ForStatement = record {
+  init : ForInit,
+  condition : Expression,
+  after : Expression,
+  body : Statement
+}
+
+WhileStatement = record {
+  condition : Expression,
+  body : Statement
+}
+
+IfElse = variant {
+  empty,
+  value : Statement
+}
+
+IfStatement = record {
+  condition : Expression,
+  body : Statement,
+  ifElse : IfElse
+}
+
+MethodDeclarator = record {
+  modifiers : Modifiers,
+  type : Expression,
+  name : string,
+  params : Params,
+  statement : Statement
+}
+
+ClassElem = variant {
+  variableDeclarator : VariableDeclarator,
+  methodDeclarator : MethodDeclarator
+}
+
+ClassElems = array of ClassElem
+
+Class = record {
+  modifiers : Modifiers,
+  name : string,
+  classElems : ClassElems
+}
+
+EnviromentElement = variant {
+  method : MethodDeclarator,
+  variable : VariableDeclarator
+}
+
+Enviroment = array of EnviromentElement
+
+Classes = array of Class
+
+Packages = array of string
+
+Imports = array of string
+
+JavaFile = record {
+  packages : Packages,
+  imports : Imports,
+  classes : Classes
+}
+
+Lang = variant {
+  cpp, 
+  php,
+  cs
+}
+
+
